@@ -445,48 +445,55 @@ INPUT .\assets\waterfall-diagramme.png
 INPUT .\assets\waterfall-diagramme.png
 INPUT .\assets\waterfall-diagramme.png
 INPUT .\assets\waterfall-diagramme.png
-INPUT .\assets\diagramme use cas.png
-INPUT .\assets\diagramme use cas.png
-INPUT .\assets\diagramme use cas.png
-INPUT .\assets\diagramme use cas.png
-INPUT .\assets\diagramme use cas.png
-INPUT .\assets\diagramme use cas.png
-INPUT .\assets\diagramme use cas.png
-INPUT .\assets\Génération d'attestation diagramme de sequence.png
-INPUT .\assets\Génération d'attestation diagramme de sequence.png
-INPUT .\assets\Génération d'attestation diagramme de sequence.png
-INPUT .\assets\Génération d'attestation diagramme de sequence.png
-INPUT .\assets\Génération d'attestation diagramme de sequence.png
-INPUT .\assets\Génération d'attestation diagramme de sequence.png
-INPUT .\assets\Génération d'attestation diagramme de sequence.png
-INPUT .\assets\Gestion des employés 1.png
-INPUT .\assets\Gestion des employés 1.png
-INPUT .\assets\Gestion des employés 1.png
-INPUT .\assets\Gestion des employés 1.png
-INPUT .\assets\Gestion des employés 1.png
-INPUT .\assets\Gestion des employés 1.png
-INPUT .\assets\Gestion des employés 1.png
-INPUT .\assets\Gestion des employés 2.png
-INPUT .\assets\Gestion des employés 2.png
-INPUT .\assets\Gestion des employés 2.png
-INPUT .\assets\Gestion des employés 2.png
-INPUT .\assets\Gestion des employés 2.png
-INPUT .\assets\Gestion des employés 2.png
-INPUT .\assets\Gestion des employés 2.png
-INPUT .\assets\diagrammes-des-classes-netcon.png
-INPUT .\assets\diagrammes-des-classes-netcon.png
-INPUT .\assets\diagrammes-des-classes-netcon.png
-INPUT .\assets\diagrammes-des-classes-netcon.png
-INPUT .\assets\diagrammes-des-classes-netcon.png
-INPUT .\assets\diagrammes-des-classes-netcon.png
-INPUT .\assets\diagrammes-des-classes-netcon.png
-INPUT .\assets\backend layer archi (springboot).png
-INPUT .\assets\backend layer archi (springboot).png
-INPUT .\assets\backend layer archi (springboot).png
-INPUT .\assets\backend layer archi (springboot).png
-INPUT .\assets\backend layer archi (springboot).png
-INPUT .\assets\backend layer archi (springboot).png
-INPUT .\assets\backend layer archi (springboot).png
+INPUT .\assets\use_cas_diagram.png
+INPUT .\assets\use_cas_diagram.png
+INPUT .\assets\use_cas_diagram.png
+INPUT .\assets\use_cas_diagram.png
+INPUT .\assets\use_cas_diagram.png
+INPUT .\assets\use_cas_diagram.png
+INPUT .\assets\use_cas_diagram.png
+INPUT .\assets\Sequence — Attestation Generation.png
+INPUT .\assets\Sequence — Attestation Generation.png
+INPUT .\assets\Sequence — Attestation Generation.png
+INPUT .\assets\Sequence — Attestation Generation.png
+INPUT .\assets\Sequence — Attestation Generation.png
+INPUT .\assets\Sequence — Attestation Generation.png
+INPUT .\assets\Sequence — Attestation Generation.png
+INPUT .\assets\Employees CRUD (Sequence).png
+INPUT .\assets\Employees CRUD (Sequence).png
+INPUT .\assets\Employees CRUD (Sequence).png
+INPUT .\assets\Employees CRUD (Sequence).png
+INPUT .\assets\Employees CRUD (Sequence).png
+INPUT .\assets\Employees CRUD (Sequence).png
+INPUT .\assets\Employees CRUD (Sequence).png
+INPUT .\assets\Class Model.png
+INPUT .\assets\Class Model.png
+INPUT .\assets\Class Model.png
+INPUT .\assets\Class Model.png
+INPUT .\assets\Class Model.png
+INPUT .\assets\Class Model.png
+INPUT .\assets\Class Model.png
+INPUT .\assets\Architecture — Backend.png
+INPUT .\assets\Architecture — Backend.png
+INPUT .\assets\Architecture — Backend.png
+INPUT .\assets\Architecture — Backend.png
+INPUT .\assets\Architecture — Backend.png
+INPUT .\assets\Architecture — Backend.png
+INPUT .\assets\Architecture — Backend.png
+INPUT .\assets\UI_Architecture_flowchart.png
+INPUT .\assets\UI_Architecture_flowchart.png
+INPUT .\assets\UI_Architecture_flowchart.png
+INPUT .\assets\UI_Architecture_flowchart.png
+INPUT .\assets\UI_Architecture_flowchart.png
+INPUT .\assets\UI_Architecture_flowchart.png
+INPUT .\assets\UI_Architecture_flowchart.png
+INPUT .\assets\Workflow — Attestation.png
+INPUT .\assets\Workflow — Attestation.png
+INPUT .\assets\Workflow — Attestation.png
+INPUT .\assets\Workflow — Attestation.png
+INPUT .\assets\Workflow — Attestation.png
+INPUT .\assets\Workflow — Attestation.png
+INPUT .\assets\Workflow — Attestation.png
 INPUT .\assets\spring-boot-logo.png
 INPUT .\assets\spring-boot-logo.png
 INPUT .\assets\spring-boot-logo.png
@@ -605,13 +612,27 @@ INPUT .\assets\liste des attestations.png
 INPUT .\assets\liste des attestations.png
 INPUT .\assets\liste des attestations.png
 INPUT .\assets\liste des attestations.png
-INPUT .\assets\panel admin.png
-INPUT .\assets\panel admin.png
-INPUT .\assets\panel admin.png
-INPUT .\assets\panel admin.png
-INPUT .\assets\panel admin.png
-INPUT .\assets\panel admin.png
-INPUT .\assets\panel admin.png
+INPUT .\assets\admin hr en attente.png
+INPUT .\assets\admin hr en attente.png
+INPUT .\assets\admin hr en attente.png
+INPUT .\assets\admin hr en attente.png
+INPUT .\assets\admin hr en attente.png
+INPUT .\assets\admin hr en attente.png
+INPUT .\assets\admin hr en attente.png
+INPUT .\assets\admin gestion des templates.png
+INPUT .\assets\admin gestion des templates.png
+INPUT .\assets\admin gestion des templates.png
+INPUT .\assets\admin gestion des templates.png
+INPUT .\assets\admin gestion des templates.png
+INPUT .\assets\admin gestion des templates.png
+INPUT .\assets\admin gestion des templates.png
+INPUT .\assets\admin new template.png
+INPUT .\assets\admin new template.png
+INPUT .\assets\admin new template.png
+INPUT .\assets\admin new template.png
+INPUT .\assets\admin new template.png
+INPUT .\assets\admin new template.png
+INPUT .\assets\admin new template.png
 INPUT .\assets\mon profil rh.png
 INPUT .\assets\mon profil rh.png
 INPUT .\assets\mon profil rh.png

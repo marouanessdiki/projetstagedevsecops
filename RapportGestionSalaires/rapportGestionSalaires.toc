@@ -31,14 +31,14 @@
 \contentsline {section}{\numberline {3.1}UML System Modeling}{19}{section.3.1}%
 \contentsline {subsection}{\numberline {3.1.1}Use Case Diagram}{19}{subsection.3.1.1}%
 \contentsline {subsection}{\numberline {3.1.2}Sequence Diagram - Attestation Generation}{20}{subsection.3.1.2}%
-\contentsline {subsection}{\numberline {3.1.3}Sequence Diagram - Employee Management}{22}{subsection.3.1.3}%
-\contentsline {section}{\numberline {3.2}Data Model}{23}{section.3.2}%
+\contentsline {subsection}{\numberline {3.1.3}Sequence Diagram - Employee Management}{21}{subsection.3.1.3}%
+\contentsline {section}{\numberline {3.2}Data Model}{22}{section.3.2}%
 \contentsline {section}{\numberline {3.3}Detailed Technical Architecture}{24}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Backend Architecture (Spring Boot)}{25}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.1}Backend Architecture (Spring Boot)}{24}{subsection.3.3.1}%
 \contentsline {subsection}{\numberline {3.3.2}Frontend Architecture (React)}{26}{subsection.3.3.2}%
-\contentsline {section}{\numberline {3.4}Attestation Generation Flow}{26}{section.3.4}%
+\contentsline {section}{\numberline {3.4}Attestation Generation Flow}{27}{section.3.4}%
 \contentsline {section}{\numberline {3.5}Conclusion}{27}{section.3.5}%
-\contentsline {chapter}{Chapter IV: Implementation}{28}{section*.23}%
+\contentsline {chapter}{Chapter IV: Implementation}{28}{section*.22}%
 \contentsline {section}{\numberline {4.1}Tools Used}{29}{section.4.1}%
 \contentsline {subsection}{\numberline {4.1.1}Backend Technologies:}{29}{subsection.4.1.1}%
 \contentsline {subsection}{\numberline {4.1.2}Frontend Technologies:}{30}{subsection.4.1.2}%
@@ -56,11 +56,11 @@
 \contentsline {subsection}{\numberline {4.6.3}Streamlined User Experience}{36}{subsection.4.6.3}%
 \contentsline {section}{\numberline {4.7}System Realization}{37}{section.4.7}%
 \contentsline {subsection}{\numberline {4.7.1}User Interface Implementation}{37}{subsection.4.7.1}%
-\contentsline {subsubsection}{Authentication System}{37}{section*.25}%
-\contentsline {subsubsection}{Employee Management Interface}{38}{section*.28}%
-\contentsline {subsubsection}{Attestation Management System}{39}{section*.32}%
-\contentsline {subsubsection}{Administrative Features}{41}{section*.37}%
-\contentsline {subsection}{\numberline {4.7.2}System Features Demonstration}{43}{subsection.4.7.2}%
-\contentsline {subsection}{\numberline {4.7.3}Technical Implementation Results}{44}{subsection.4.7.3}%
-\contentsline {section}{\numberline {4.8}Conclusion}{45}{section.4.8}%
-\contentsline {section}{General Conclusion}{47}{section*.41}%
+\contentsline {subsubsection}{Authentication System}{37}{section*.24}%
+\contentsline {subsubsection}{Employee Management Interface}{38}{section*.27}%
+\contentsline {subsubsection}{Attestation Management System}{39}{section*.31}%
+\contentsline {subsubsection}{Administrative Features}{41}{section*.36}%
+\contentsline {subsection}{\numberline {4.7.2}System Features Demonstration}{44}{subsection.4.7.2}%
+\contentsline {subsection}{\numberline {4.7.3}Technical Implementation Results}{45}{subsection.4.7.3}%
+\contentsline {section}{\numberline {4.8}Conclusion}{46}{section.4.8}%
+\contentsline {section}{General Conclusion}{48}{section*.42}%

@@ -731,7 +731,7 @@ This UML-based approach ensures a systematic and professional design methodology
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{\detokenize{./assets/diagramme use cas.png}}
+\includegraphics[width=0.95\textwidth]{\detokenize{./assets/use_cas_diagram.png}}
 \caption{Use Case Diagram - System Actors and Interactions}
 \label{fig:use-case-diagram}
 \end{figure}
@@ -741,9 +741,9 @@ This UML-based approach ensures a systematic and professional design methodology
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{\detokenize{./assets/Génération d'attestation diagramme de sequence.png}}
+\includegraphics[width=0.9\textwidth]{\detokenize{./assets/Sequence — Attestation Generation.png}}
 \caption{Sequence Diagram - Attestation Generation Process}
-\label{fig:sequence-diagram}
+\label{fig:sequence-diagram-attestation}
 \end{figure}
 
 \subsection{Sequence Diagram - Employee Management}
@@ -751,16 +751,9 @@ This UML-based approach ensures a systematic and professional design methodology
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{\detokenize{./assets/Gestion des employés 1.png}}
-\caption{Sequence Diagram - Employee Management (Part 1)}
-\label{fig:sequence-diagram-employees-1}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.95\textwidth]{\detokenize{./assets/Gestion des employés 2.png}}
-\caption{Sequence Diagram - Employee Management (Part 2)}
-\label{fig:sequence-diagram-employees-2}
+\includegraphics[width=0.95\textwidth]{\detokenize{./assets/Employees CRUD (Sequence).png}}
+\caption{Sequence Diagram - Employee Management}
+\label{fig:sequence-diagram-employees}
 \end{figure}
 
 \section{Data Model}
@@ -768,7 +761,7 @@ This UML-based approach ensures a systematic and professional design methodology
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{./assets/diagrammes-des-classes-netcon.png}
+\includegraphics[width=0.95\textwidth]{./assets/Class Model.png}
 \caption{UML Class Diagram - Global Data Model}
 \label{fig:system-data-model}
 \end{figure}
@@ -781,7 +774,7 @@ This model ensures referential integrity and allows effective data management. T
 \subsection{Backend Architecture (Spring Boot)}
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.4\textwidth]{\detokenize{./assets/backend layer archi (springboot).png}}
+\includegraphics[width=0.95\textwidth]{\detokenize{./assets/Architecture — Backend.png}}
 \caption{Backend Layered Architecture}
 \end{figure}
 
@@ -794,18 +787,7 @@ This model ensures referential integrity and allows effective data management. T
 \subsection{Frontend Architecture (React)}
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[node distance=3cm, auto]
-    
-    \node [component] (app) {App.js};
-    \node [component, below left of=app] (components) {Components};
-    \node [component, below right of=app] (services) {Services};
-    \node [component, below of=components] (contexts) {Contexts};
-    
-    \draw [->] (app) -- (components);
-    \draw [->] (app) -- (services);
-    \draw [->] (components) -- (contexts);
-    \draw [->] (services) -- node[right] {API Calls} (app);
-\end{tikzpicture}
+\includegraphics[width=0.95\textwidth]{\detokenize{./assets/UI_Architecture_flowchart.png}}
 \caption{Frontend Component Architecture}
 \end{figure}
 
@@ -819,42 +801,7 @@ This model ensures referential integrity and allows effective data management. T
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[
-    node distance=5cm,
-    auto,
-    process/.style={
-        rectangle,
-        rounded corners,
-        minimum width=3cm,
-        minimum height=1cm,
-        text centered,
-        draw=black,
-        fill=blue!30
-    },
-    decision/.style={
-        diamond,
-        minimum width=3cm,
-        minimum height=1cm,
-        text centered,
-        draw=black,
-        fill=yellow!30
-    }
-]
-    
-    \node [process] (start) {Employee Selection};
-    \node [process, right of=start] (type) {Attestation Type Choice};
-    \node [decision, right of=type] (template) {Template Exists?};
-    \node [process, right of=template] (generate) {PDF Generation};
-    \node [process, below of=generate] (save) {Save};
-    \node [process, below of=save] (download) {Download};
-    
-    \draw [->] (start) -- (type);
-    \draw [->] (type) -- (template);
-    \draw [->] (template) -- node[above] {Yes} (generate);
-    \draw [->] (template) |- node[near start, above] {No} ++(-2,-2) -| (start);
-    \draw [->] (generate) -- (save);
-    \draw [->] (save) -- (download);
-\end{tikzpicture}
+\includegraphics[width=0.95\textwidth]{\detokenize{./assets/Workflow — Attestation.png}}
 \caption{Attestation Generation Flow}
 \label{fig:attestation-flow}
 \end{figure}
@@ -1243,13 +1190,27 @@ These improvements will harden the platform for production use while preserving 
 \end{figure}
 
 \subsubsection{Administrative Features}
-\hspace{1cm}The system includes administrative capabilities for system management and user profile configuration:
+\hspace{1cm}The system includes comprehensive administrative capabilities for system management and user profile configuration:
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{\detokenize{./assets/panel admin.png}}
-\caption{Admin Panel - System Administration}
-\label{fig:admin-panel}
+\includegraphics[width=0.95\textwidth]{\detokenize{./assets/admin hr en attente.png}}
+\caption{Admin Panel - HR User Management}
+\label{fig:admin-hr-management}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{\detokenize{./assets/admin gestion des templates.png}}
+\caption{Admin Panel - Template Management System}
+\label{fig:admin-template-management}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{\detokenize{./assets/admin new template.png}}
+\caption{Admin Panel - Creating New Template}
+\label{fig:admin-new-template}
 \end{figure}
 
 \begin{figure}[H]
