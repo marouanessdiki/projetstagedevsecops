@@ -1,93 +1,68 @@
-﻿# Frontend Architecture
+﻿flowchart
 
-```eraser
-flowchart
-    direction: top-down
-    
-    subgraph "React Application"
-        direction: top-down
-        
-        subgraph "Components"
-            direction: left-right
-            C1["AdminPanel"]
-            C2["AttestationPage"]
-            C3["EmployeList"]
-            C4["EmployeForm"]
-            C5["AuthLogin"]
-            C6["HrProfile"]
-            C7["HrSignup"]
-            C8["Menu"]
-        end
-        
-        subgraph "Contexts & State"
-            CTX1["ThemeContext"]
-            CTX2["UserContext"]
-        end
-        
-        subgraph "Services"
-            API["api.js - Axios HTTP Client"]
-        end
-    end
-    
-    subgraph "External Dependencies"
-        direction: left-right
-        MUI["Material-UI Components"]
-        ROUTER["React Router"]
-        BACKEND["Spring Boot API"]
-    end
-    
-    %% Component to Context connections
-    C1 --> CTX1
-    C2 --> CTX1
-    C3 --> CTX1
-    C6 --> CTX1
-    
-    C1 --> CTX2
-    C2 --> CTX2
-    C5 --> CTX2
-    C7 --> CTX2
-    
-    %% Component to Service connections
-    C1 --> API
-    C2 --> API
-    C3 --> API
-    C4 --> API
-    C5 --> API
-    C6 --> API
-    C7 --> API
-    
-    %% Component to External connections
-    C1 --> MUI
-    C2 --> MUI
-    C3 --> MUI
-    C4 --> MUI
-    C5 --> MUI
-    C6 --> MUI
-    C7 --> MUI
-    C8 --> MUI
-    
-    C1 --> ROUTER
-    C2 --> ROUTER
-    C3 --> ROUTER
-    C5 --> ROUTER
-    C7 --> ROUTER
-    
-    %% Service to Backend connection
-    API --> BACKEND
-    
-    style C1 fill:#e8f5e8
-    style C2 fill:#e8f5e8
-    style C3 fill:#e8f5e8
-    style C4 fill:#e8f5e8
-    style C5 fill:#e8f5e8
-    style C6 fill:#e8f5e8
-    style C7 fill:#e8f5e8
-    style C8 fill:#e8f5e8
-    
-    style CTX1 fill:#fff3e0
-    style CTX2 fill:#fff3e0
-    style API fill:#f3e5f5
-    style MUI fill:#e1f5fe
-    style ROUTER fill:#e1f5fe
-    style BACKEND fill:#ffebee
-```
+ReactApp [color: lightblue] {
+  Components {
+    AdminPanel [icon: settings]
+    AttestationPage [icon: file-text]
+    EmployeList [icon: list]
+    EmployeForm [icon: user-plus]
+    AuthLogin [icon: log-in]
+    HrProfile [icon: user]
+    HrSignup [icon: user-plus]
+    Menu [icon: menu]
+  }
+  
+  Contexts {
+    ThemeContext [icon: palette]
+    UserContext [icon: user-check]
+  }
+  
+  Services {
+    API [icon: cloud]: api.js - Axios HTTP Client
+  }
+}
+
+ExternalDeps [color: orange] {
+  MUI [icon: layers]: Material-UI Components
+  Router [icon: navigation]: React Router
+  Backend [icon: server]: Spring Boot API
+}
+
+// Component to Context connections
+AdminPanel > ThemeContext
+AttestationPage > ThemeContext
+EmployeList > ThemeContext
+HrProfile > ThemeContext
+
+AdminPanel > UserContext
+AttestationPage > UserContext
+AuthLogin > UserContext
+HrSignup > UserContext
+
+// Component to Service connections
+AdminPanel > API
+AttestationPage > API
+EmployeList > API
+EmployeForm > API
+AuthLogin > API
+HrProfile > API
+HrSignup > API
+
+// Component to External connections
+AdminPanel > MUI
+AttestationPage > MUI
+EmployeList > MUI
+EmployeForm > MUI
+AuthLogin > MUI
+HrProfile > MUI
+HrSignup > MUI
+Menu > MUI
+
+AdminPanel > Router
+AttestationPage > Router
+EmployeList > Router
+AuthLogin > Router
+HrSignup > Router
+
+// Service to Backend connection
+API > Backend

@@ -1,89 +1,20 @@
-# Diagram Template
-
-```eraser
 flowchart
-    direction: top-down
-    
-    Start([Start]) --> Process[Process Step]
-    Process --> Decision{Decision?}
-    Decision -->|Yes| Success([Success])
-    Decision -->|No| Error([Error])
-    Success --> End([End])
-    Error --> Process
-    
-    style Start fill:#e1f5fe
-    style End fill:#e1f5fe
-    style Success fill:#e8f5e8
-    style Process fill:#f3e5f5
-    style Decision fill:#fff3e0
-    style Error fill:#ffebee
-```
 
-## Instructions
+Start [icon: play] > Process [icon: settings]: Process Step
+Process > Decision [shape: diamond, icon: check]: Decision?
+Decision > Success [icon: check-circle]: Yes
+Decision > Error [icon: x-circle]: No
+Success > End [icon: stop]: End
+Error > Process: Retry
 
-1. **Replace the title** with your diagram name
-2. **Replace the Eraser code** with your diagram syntax
-3. **Add comments** to explain complex parts
-4. **Use styling** for better visualization (optional)
-5. **Save as .eraserdiagram** file
-6. **Open in VS Code** with Eraser extension
+SuccessPath [color: green] {
+  Start [icon: play, color: green]
+  Process [icon: settings, color: green]
+  Success [icon: check-circle, color: green]
+  End [icon: stop, color: green]
+}
 
-## Eraser Syntax Examples
-
-### Flowchart
-```eraser
-flowchart
-    direction: top-down
-    A[Start] --> B{Decision}
-    B -->|Yes| C[Action 1]
-    B -->|No| D[Action 2]
-```
-
-### Sequence Diagram
-```eraser
-sequence
-    participant A as Actor
-    participant B as System
-    A->B: Request
-    B-->>A: Response
-```
-
-### Entity Relationship
-```eraser
-er
-    ENTITY {
-        id: int PK
-        name: string
-    }
-```
-
-### Architecture Diagram
-```eraser
-flowchart
-    direction: left-right
-    subgraph "Layer 1"
-        A[Component A]
-        B[Component B]
-    end
-    subgraph "Layer 2"
-        C[Component C]
-        D[Component D]
-    end
-    A --> C
-    B --> D
-```
-
-## Styling Options
-
-```eraser
-style ComponentName fill:#color
-```
-
-Available colors:
-- `#e1f5fe` (light blue)
-- `#f3e5f5` (light purple)
-- `#e8f5e8` (light green)
-- `#fff3e0` (light orange)
-- `#ffebee` (light red)
-- `#e0f2f1` (light teal)
-- `#fafafa` (light gray)
+ErrorPath [color: red] {
+  Error [icon: x-circle, color: red]
+  Decision [shape: diamond, icon: check, color: red]
+}

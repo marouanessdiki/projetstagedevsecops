@@ -1,41 +1,29 @@
-﻿# Sequence Diagram - Attestation Generation
+﻿sequence-diagram
 
-```eraser
-sequence
-    participant HR as HR User
-    participant Frontend as React Frontend
-    participant API as Spring Boot API
-    participant Service as AttestationService
-    participant Template as TemplateService
-    participant DB as MySQL Database
-    participant JR as JasperReports
-    participant FS as File System
+HR User [icon: user] > React Frontend [icon: layout]: Select employee & attestation type
+React Frontend > Spring Boot API [icon: cloud-cog]: POST /api/attestations
+Spring Boot API > AttestationService [icon: function]: generateAttestation(attestationDto)
 
-    HR->Frontend: Select employee & attestation type
-    Frontend->API: POST /api/attestations
-    API->Service: generateAttestation(attestationDto)
-    
-    Service->DB: Find employee by ID
-    DB-->>Service: Return employee data
-    
-    Service->Template: Get template by type
-    Template->DB: Find template by name
-    DB-->>Template: Return JRXML template
-    Template-->>Service: Return template content
-    
-    Service->JR: Compile JRXML template
-    JR-->>Service: Return compiled template
-    
-    Service->JR: Fill template with employee data
-    JR-->>Service: Generate PDF bytes
-    
-    Service->FS: Save PDF to pdfs/ folder
-    Service->DB: Save attestation record
-    DB-->>Service: Confirm save
-    
-    Service-->>API: Return success response
-    API-->>Frontend: Return success + file info
-    Frontend-->>HR: Show success notification
-    
-    note over HR,FS: PDF is now available for download
-```
+AttestationService > MySQL Database [icon: database]: Find employee by ID
+MySQL Database > AttestationService: Return employee data
+
+AttestationService > TemplateService [icon: function]: Get template by type
+TemplateService > MySQL Database: Find template by name
+MySQL Database > TemplateService: Return JRXML template
+TemplateService > AttestationService: Return template content
+
+AttestationService > JasperReports [icon: file]: Compile JRXML template
+JasperReports > AttestationService: Return compiled template
+
+AttestationService > JasperReports: Fill template with employee data
+JasperReports > AttestationService: Generate PDF bytes
+
+AttestationService > File System [icon: folder]: Save PDF to pdfs/ folder
+AttestationService > MySQL Database: Save attestation record
+MySQL Database > AttestationService: Confirm save
+
+AttestationService > Spring Boot API: Return success response
+Spring Boot API > React Frontend: Return success + file info
+React Frontend > HR User: Show success notification
+
+note over HR User,File System: PDF is now available for download

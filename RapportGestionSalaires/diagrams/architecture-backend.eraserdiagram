@@ -1,82 +1,57 @@
-﻿# Backend Layered Architecture
+﻿flowchart
 
-```eraser
-flowchart
-    direction: top-down
-    
-    subgraph "Controllers Layer"
-        direction: left-right
-        C1["EmployeRestController"]
-        C2["AttestationRestController"] 
-        C3["ParametreController"]
-        C4["AuthController"]
-        C5["HrController"]
-    end
-    
-    subgraph "Services Layer"
-        direction: left-right
-        S1["EmployeService"]
-        S2["AttestationServiceImpl"]
-        S3["ParametreService"]
-        S4["AttestationTemplateService"]
-        S5["AttestationTemplateMigrationService"]
-    end
-    
-    subgraph "Data Access Layer"
-        direction: left-right
-        R1["EmployeRepository"]
-        R2["AttestationRepository"]
-        R3["ParametreRepository"]
-        R4["HrRepository"]
-        R5["AttestationTemplateRepository"]
-    end
-    
-    subgraph "Infrastructure"
-        direction: left-right
-        DB[("MySQL Database")]
-        JR[("JasperReports")]
-        FS[("File System")]
-    end
-    
-    %% Controller to Service connections
-    C1 --> S1
-    C2 --> S2
-    C3 --> S3
-    C3 --> S4
-    C3 --> S5
-    C4 --> R4
-    C5 --> R4
-    
-    %% Service to Repository connections
-    S1 --> R1
-    S2 --> R2
-    S2 --> R1
-    S2 --> JR
-    S2 --> FS
-    S3 --> R3
-    S4 --> R5
-    S5 --> R5
-    
-    %% Repository to Database connections
-    R1 --> DB
-    R2 --> DB
-    R3 --> DB
-    R4 --> DB
-    R5 --> DB
-    
-    style C1 fill:#e1f5fe
-    style C2 fill:#e1f5fe
-    style C3 fill:#e1f5fe
-    style C4 fill:#e1f5fe
-    style C5 fill:#e1f5fe
-    
-    style S1 fill:#f3e5f5
-    style S2 fill:#f3e5f5
-    style S3 fill:#f3e5f5
-    style S4 fill:#f3e5f5
-    style S5 fill:#f3e5f5
-    
-    style DB fill:#fff3e0
-    style JR fill:#fff3e0
-    style FS fill:#fff3e0
-```
+Controllers [color: lightblue] {
+  EmployeRestController [icon: user]
+  AttestationRestController [icon: file-text]
+  ParametreController [icon: settings]
+  AuthController [icon: shield]
+  HrController [icon: users]
+}
+
+Services [color: orange] {
+  EmployeService [icon: user-check]
+  AttestationServiceImpl [icon: file-plus]
+  ParametreService [icon: settings]
+  AttestationTemplateService [icon: template]
+  AttestationTemplateMigrationService [icon: refresh-cw]
+}
+
+DataAccess [color: green] {
+  EmployeRepository [icon: database]
+  AttestationRepository [icon: file-text]
+  ParametreRepository [icon: settings]
+  HrRepository [icon: users]
+  AttestationTemplateRepository [icon: template]
+}
+
+Infrastructure [color: purple] {
+  MySQL Database [icon: database]
+  JasperReports [icon: file-text]
+  File System [icon: folder]
+}
+
+// Controller to Service connections
+EmployeRestController > EmployeService
+AttestationRestController > AttestationServiceImpl
+ParametreController > ParametreService
+ParametreController > AttestationTemplateService
+ParametreController > AttestationTemplateMigrationService
+AuthController > HrRepository
+HrController > HrRepository
+
+// Service to Repository connections
+EmployeService > EmployeRepository
+AttestationServiceImpl > AttestationRepository
+AttestationServiceImpl > EmployeRepository
+AttestationServiceImpl > JasperReports
+AttestationServiceImpl > File System
+ParametreService > ParametreRepository
+AttestationTemplateService > AttestationTemplateRepository
+AttestationTemplateMigrationService > AttestationTemplateRepository
+
+// Repository to Database connections
+EmployeRepository > MySQL Database
+AttestationRepository > MySQL Database
+ParametreRepository > MySQL Database
+HrRepository > MySQL Database
+AttestationTemplateRepository > MySQL Database

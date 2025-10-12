@@ -1,58 +1,43 @@
-﻿# Sequence Diagram - Employee Management
+﻿sequence-diagram
 
-```eraser
-sequence
-    participant HR as HR User
-    participant Frontend as React Frontend
-    participant API as Spring Boot API
-    participant Service as EmployeService
-    participant DB as MySQL Database
+HR User [icon: user] > React Frontend [icon: layout]: Fill employee form
+React Frontend > Spring Boot API [icon: cloud-cog]: POST /api/employes
+Spring Boot API > EmployeService [icon: function]: createEmploye(employeDto)
+EmployeService > MySQL Database [icon: database]: INSERT new employee
+MySQL Database > EmployeService: Return saved employee
+EmployeService > Spring Boot API: Return employee data
+Spring Boot API > React Frontend: Return success response
+React Frontend > HR User: Show success notification
 
-    note over HR,DB: Employee CRUD Operations
+note over HR User,MySQL Database: ---
 
-    %% Create Employee
-    HR->Frontend: Fill employee form
-    Frontend->API: POST /api/employes
-    API->Service: createEmploye(employeDto)
-    Service->DB: INSERT new employee
-    DB-->>Service: Return saved employee
-    Service-->>API: Return employee data
-    API-->>Frontend: Return success response
-    Frontend-->>HR: Show success notification
+HR User > React Frontend: View employee list
+React Frontend > Spring Boot API: GET /api/employes
+Spring Boot API > EmployeService: getAllEmployes()
+EmployeService > MySQL Database: SELECT all employees
+MySQL Database > EmployeService: Return employee list
+EmployeService > Spring Boot API: Return employee list
+Spring Boot API > React Frontend: Return employee data
+React Frontend > HR User: Display employee table
 
-    note over HR,DB: ---
+note over HR User,MySQL Database: ---
 
-    %% Read Employees
-    HR->Frontend: View employee list
-    Frontend->API: GET /api/employes
-    API->Service: getAllEmployes()
-    Service->DB: SELECT all employees
-    DB-->>Service: Return employee list
-    Service-->>API: Return employee list
-    API-->>Frontend: Return employee data
-    Frontend-->>HR: Display employee table
+HR User > React Frontend: Edit employee
+React Frontend > Spring Boot API: PUT /api/employes/{id}
+Spring Boot API > EmployeService: updateEmploye(id, employeDto)
+EmployeService > MySQL Database: UPDATE employee
+MySQL Database > EmployeService: Return updated employee
+EmployeService > Spring Boot API: Return employee data
+Spring Boot API > React Frontend: Return success response
+React Frontend > HR User: Show success notification
 
-    note over HR,DB: ---
+note over HR User,MySQL Database: ---
 
-    %% Update Employee
-    HR->Frontend: Edit employee
-    Frontend->API: PUT /api/employes/{id}
-    API->Service: updateEmploye(id, employeDto)
-    Service->DB: UPDATE employee
-    DB-->>Service: Return updated employee
-    Service-->>API: Return employee data
-    API-->>Frontend: Return success response
-    Frontend-->>HR: Show success notification
-
-    note over HR,DB: ---
-
-    %% Delete Employee
-    HR->Frontend: Delete employee
-    Frontend->API: DELETE /api/employes/{id}
-    API->Service: deleteEmploye(id)
-    Service->DB: DELETE employee
-    DB-->>Service: Confirm deletion
-    Service-->>API: Return success
-    API-->>Frontend: Return success response
-    Frontend-->>HR: Show success notification
-```
+HR User > React Frontend: Delete employee
+React Frontend > Spring Boot API: DELETE /api/employes/{id}
+Spring Boot API > EmployeService: deleteEmploye(id)
+EmployeService > MySQL Database: DELETE employee
+MySQL Database > EmployeService: Confirm deletion
+EmployeService > Spring Boot API: Return success
+Spring Boot API > React Frontend: Return success response
+React Frontend > HR User: Show success notification
