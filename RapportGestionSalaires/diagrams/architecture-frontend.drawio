@@ -1,0 +1,67 @@
+﻿<mxfile host="app.diagrams.net">
+  <diagram id="9a663fa47186415e936a75b8738e53a9" name="Page-1">
+    <mxGraphModel dx="1232" dy="686" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="2" value="# Frontend Architecture
+
+```mermaid
+flowchart TB
+  subgraph ReactApp[React Application]
+    subgraph Components
+      C1[AdminPanel]
+      C2[AttestationPage]
+      C3[EmployeList]
+      C4[EmployeForm]
+      C5[AuthLogin]
+      C6[HrProfile]
+      C7[HrSignup]
+      C8[Menu]
+    end
+
+    subgraph Contexts
+      CTX1[ThemeContext]
+    end
+
+    subgraph Services
+      API[api.js - Axios]
+    end
+  end
+
+  subgraph External
+    MUI[Material-UI Components]
+    BACKEND[Spring Boot API]
+  end
+
+  %% Connections
+  C1 --&gt; API
+  C2 --&gt; API
+  C3 --&gt; API
+  C4 --&gt; API
+  C5 --&gt; API
+  C6 --&gt; API
+  C7 --&gt; API
+
+  C1 --&gt; CTX1
+  C2 --&gt; CTX1
+  C3 --&gt; CTX1
+  C6 --&gt; CTX1
+
+  C1 --&gt; MUI
+  C2 --&gt; MUI
+  C3 --&gt; MUI
+  C4 --&gt; MUI
+  C5 --&gt; MUI
+  C6 --&gt; MUI
+  C7 --&gt; MUI
+  C8 --&gt; MUI
+
+  API --&gt; BACKEND
+```" style="shape=mxgraph.mermaid;verticalLabelPosition=bottom;verticalAlign=top;html=1;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1500" height="1000" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,39 +1,88 @@
 ﻿# Use Case Diagram
 
-```mermaid
-flowchart LR
-  %% Actors
-  HR([HR User])
-  Admin([Administrator])
-
-  %% System boundary (visual grouping)
-  subgraph System[Salary & HR Attestation System]
-    UC1[[Manage Employees]]
-    UC2[[Generate Attestation]]
-    UC3[[Download Attestation]]
-    UC4[[Manage Templates (JRXML)]]
-    UC5[[Login / Signup]]
-    UC6[[Approve HR Accounts]]
-    UC7[[Dark Mode Toggle]]
-    UC8[[Color-coded Interface]]
-  end
-
-  %% Relations
-  HR --> UC1
-  HR --> UC2
-  HR --> UC3
-  HR --> UC5
-  HR --> UC7
-  HR --> UC8
-  Admin --> UC4
-  Admin --> UC6
-  Admin --> UC5
-  Admin --> UC7
-  Admin --> UC8
-
-  %% Notes
-  note right of UC4: DB-backed JRXML templates
-  note right of UC2: JasperReports PDF generation
-  note right of UC7: Theme persistence
-  note right of UC8: Intelligent color assignment
+```eraser
+flowchart
+    direction: left-right
+    
+    %% Actors
+    HR[("HR User")]
+    Admin[("Administrator")]
+    
+    %% System boundary
+    subgraph "Salary & HR Attestation System"
+        direction: top-down
+        
+        subgraph "Employee Management"
+            UC1[["Manage Employees"]]
+            UC2[["View Employee List"]]
+            UC3[["Add/Edit Employee"]]
+        end
+        
+        subgraph "Attestation Management"
+            UC4[["Generate Attestation"]]
+            UC5[["Download Attestation"]]
+            UC6[["View Attestation History"]]
+        end
+        
+        subgraph "Template Management"
+            UC7[["Create Template"]]
+            UC8[["Edit Template"]]
+            UC9[["Delete Template"]]
+        end
+        
+        subgraph "Authentication"
+            UC10[["Login"]]
+            UC11[["Signup"]]
+        end
+        
+        subgraph "Administration"
+            UC12[["Approve HR Accounts"]]
+            UC13[["Manage Users"]]
+        end
+        
+        subgraph "UI Features"
+            UC14[["Dark Mode Toggle"]]
+            UC15[["Color-coded Interface"]]
+        end
+    end
+    
+    %% HR User connections
+    HR --> UC1
+    HR --> UC2
+    HR --> UC3
+    HR --> UC4
+    HR --> UC5
+    HR --> UC6
+    HR --> UC10
+    HR --> UC11
+    HR --> UC14
+    HR --> UC15
+    
+    %% Administrator connections
+    Admin --> UC7
+    Admin --> UC8
+    Admin --> UC9
+    Admin --> UC10
+    Admin --> UC12
+    Admin --> UC13
+    Admin --> UC14
+    Admin --> UC15
+    
+    style HR fill:#e1f5fe
+    style Admin fill:#fff3e0
+    style UC1 fill:#e8f5e8
+    style UC2 fill:#e8f5e8
+    style UC3 fill:#e8f5e8
+    style UC4 fill:#f3e5f5
+    style UC5 fill:#f3e5f5
+    style UC6 fill:#f3e5f5
+    style UC7 fill:#ffebee
+    style UC8 fill:#ffebee
+    style UC9 fill:#ffebee
+    style UC10 fill:#fafafa
+    style UC11 fill:#fafafa
+    style UC12 fill:#ffebee
+    style UC13 fill:#ffebee
+    style UC14 fill:#e0f2f1
+    style UC15 fill:#e0f2f1
 ```

@@ -1,30 +1,70 @@
 ﻿# Waterfall Development Methodology
 
-```mermaid
-gantt
-    title Project Development Timeline
-    dateFormat  YYYY-MM-DD
-    section Requirements
-    Analysis & Planning    :done, req1, 2024-09-01, 2024-09-07
-    Requirements Gathering :done, req2, 2024-09-08, 2024-09-14
+```eraser
+flowchart
+    direction: left-right
     
-    section Design
-    System Design         :done, des1, 2024-09-15, 2024-09-21
-    Database Design       :done, des2, 2024-09-22, 2024-09-28
-    UI/UX Design          :done, des3, 2024-09-29, 2024-10-05
+    subgraph "Requirements Phase"
+        direction: top-down
+        R1["Analysis & Planning<br/>Sept 1-7, 2024"]
+        R2["Requirements Gathering<br/>Sept 8-14, 2024"]
+    end
     
-    section Implementation
-    Backend Development   :done, impl1, 2024-10-06, 2024-10-20
-    Frontend Development  :done, impl2, 2024-10-21, 2024-11-04
-    Integration          :done, impl3, 2024-11-05, 2024-11-11
+    subgraph "Design Phase"
+        direction: top-down
+        D1["System Design<br/>Sept 15-21, 2024"]
+        D2["Database Design<br/>Sept 22-28, 2024"]
+        D3["UI/UX Design<br/>Sept 29 - Oct 5, 2024"]
+    end
     
-    section Testing
-    Unit Testing         :done, test1, 2024-11-12, 2024-11-18
-    Integration Testing  :done, test2, 2024-11-19, 2024-11-25
-    System Testing       :done, test3, 2024-11-26, 2024-12-02
+    subgraph "Implementation Phase"
+        direction: top-down
+        I1["Backend Development<br/>Oct 6-20, 2024"]
+        I2["Frontend Development<br/>Oct 21 - Nov 4, 2024"]
+        I3["Integration<br/>Nov 5-11, 2024"]
+    end
     
-    section Deployment
-    Production Setup     :done, dep1, 2024-12-03, 2024-12-09
-    Final Testing        :done, dep2, 2024-12-10, 2024-12-16
-    Documentation        :done, dep3, 2024-12-17, 2024-12-23
+    subgraph "Testing Phase"
+        direction: top-down
+        T1["Unit Testing<br/>Nov 12-18, 2024"]
+        T2["Integration Testing<br/>Nov 19-25, 2024"]
+        T3["System Testing<br/>Nov 26 - Dec 2, 2024"]
+    end
+    
+    subgraph "Deployment Phase"
+        direction: top-down
+        DP1["Production Setup<br/>Dec 3-9, 2024"]
+        DP2["Final Testing<br/>Dec 10-16, 2024"]
+        DP3["Documentation<br/>Dec 17-23, 2024"]
+    end
+    
+    %% Sequential flow
+    R1 --> R2
+    R2 --> D1
+    D1 --> D2
+    D2 --> D3
+    D3 --> I1
+    I1 --> I2
+    I2 --> I3
+    I3 --> T1
+    T1 --> T2
+    T2 --> T3
+    T3 --> DP1
+    DP1 --> DP2
+    DP2 --> DP3
+    
+    style R1 fill:#e1f5fe
+    style R2 fill:#e1f5fe
+    style D1 fill:#f3e5f5
+    style D2 fill:#f3e5f5
+    style D3 fill:#f3e5f5
+    style I1 fill:#e8f5e8
+    style I2 fill:#e8f5e8
+    style I3 fill:#e8f5e8
+    style T1 fill:#fff3e0
+    style T2 fill:#fff3e0
+    style T3 fill:#fff3e0
+    style DP1 fill:#ffebee
+    style DP2 fill:#ffebee
+    style DP3 fill:#ffebee
 ```

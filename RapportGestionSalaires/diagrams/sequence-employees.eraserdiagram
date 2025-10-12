@@ -1,50 +1,56 @@
 ﻿# Sequence Diagram - Employee Management
 
-```mermaid
-sequenceDiagram
+```eraser
+sequence
     participant HR as HR User
     participant Frontend as React Frontend
     participant API as Spring Boot API
     participant Service as EmployeService
     participant DB as MySQL Database
 
-    Note over HR,DB: Employee CRUD Operations
+    note over HR,DB: Employee CRUD Operations
 
     %% Create Employee
-    HR->>Frontend: Fill employee form
-    Frontend->>API: POST /api/employes
-    API->>Service: createEmploye(employeDto)
-    Service->>DB: INSERT new employee
+    HR->Frontend: Fill employee form
+    Frontend->API: POST /api/employes
+    API->Service: createEmploye(employeDto)
+    Service->DB: INSERT new employee
     DB-->>Service: Return saved employee
     Service-->>API: Return employee data
     API-->>Frontend: Return success response
     Frontend-->>HR: Show success notification
 
+    note over HR,DB: ---
+
     %% Read Employees
-    HR->>Frontend: View employee list
-    Frontend->>API: GET /api/employes
-    API->>Service: getAllEmployes()
-    Service->>DB: SELECT all employees
+    HR->Frontend: View employee list
+    Frontend->API: GET /api/employes
+    API->Service: getAllEmployes()
+    Service->DB: SELECT all employees
     DB-->>Service: Return employee list
     Service-->>API: Return employee list
     API-->>Frontend: Return employee data
     Frontend-->>HR: Display employee table
 
+    note over HR,DB: ---
+
     %% Update Employee
-    HR->>Frontend: Edit employee
-    Frontend->>API: PUT /api/employes/{id}
-    API->>Service: updateEmploye(id, employeDto)
-    Service->>DB: UPDATE employee
+    HR->Frontend: Edit employee
+    Frontend->API: PUT /api/employes/{id}
+    API->Service: updateEmploye(id, employeDto)
+    Service->DB: UPDATE employee
     DB-->>Service: Return updated employee
     Service-->>API: Return employee data
     API-->>Frontend: Return success response
     Frontend-->>HR: Show success notification
 
+    note over HR,DB: ---
+
     %% Delete Employee
-    HR->>Frontend: Delete employee
-    Frontend->>API: DELETE /api/employes/{id}
-    API->>Service: deleteEmploye(id)
-    Service->>DB: DELETE employee
+    HR->Frontend: Delete employee
+    Frontend->API: DELETE /api/employes/{id}
+    API->Service: deleteEmploye(id)
+    Service->DB: DELETE employee
     DB-->>Service: Confirm deletion
     Service-->>API: Return success
     API-->>Frontend: Return success response

@@ -1,0 +1,53 @@
+﻿<mxfile host="app.diagrams.net">
+  <diagram id="99a1df6973584d359a58a1b3f12afd26" name="Page-1">
+    <mxGraphModel dx="1232" dy="686" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="2" value="# Sequence Diagram - Attestation Generation
+
+```mermaid
+sequenceDiagram
+    participant HR as HR User
+    participant Frontend as React Frontend
+    participant API as Spring Boot API
+    participant Service as AttestationService
+    participant Template as TemplateService
+    participant DB as MySQL Database
+    participant JR as JasperReports
+    participant FS as File System
+
+    HR-&gt;&gt;Frontend: Select employee &amp; attestation type
+    Frontend-&gt;&gt;API: POST /api/attestations
+    API-&gt;&gt;Service: generateAttestation(attestationDto)
+    
+    Service-&gt;&gt;DB: Find employee by ID
+    DB--&gt;&gt;Service: Return employee data
+    
+    Service-&gt;&gt;Template: Get template by type
+    Template-&gt;&gt;DB: Find template by name
+    DB--&gt;&gt;Template: Return JRXML template
+    Template--&gt;&gt;Service: Return template content
+    
+    Service-&gt;&gt;JR: Compile JRXML template
+    JR--&gt;&gt;Service: Return compiled template
+    
+    Service-&gt;&gt;JR: Fill template with employee data
+    JR--&gt;&gt;Service: Generate PDF bytes
+    
+    Service-&gt;&gt;FS: Save PDF to pdfs/ folder
+    Service-&gt;&gt;DB: Save attestation record
+    DB--&gt;&gt;Service: Confirm save
+    
+    Service--&gt;&gt;API: Return success response
+    API--&gt;&gt;Frontend: Return success + file info
+    Frontend--&gt;&gt;HR: Show success notification
+    
+    Note over HR,FS: PDF is now available for download
+```" style="shape=mxgraph.mermaid;verticalLabelPosition=bottom;verticalAlign=top;html=1;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1500" height="1000" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,64 @@
+﻿<mxfile host="app.diagrams.net">
+  <diagram id="1b7cb960a980450f8e80c37819c15b8d" name="Page-1">
+    <mxGraphModel dx="1232" dy="686" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="2" value="# Sequence Diagram - Employee Management
+
+```mermaid
+sequenceDiagram
+    participant HR as HR User
+    participant Frontend as React Frontend
+    participant API as Spring Boot API
+    participant Service as EmployeService
+    participant DB as MySQL Database
+
+    Note over HR,DB: Employee CRUD Operations
+
+    %% Create Employee
+    HR-&gt;&gt;Frontend: Fill employee form
+    Frontend-&gt;&gt;API: POST /api/employes
+    API-&gt;&gt;Service: createEmploye(employeDto)
+    Service-&gt;&gt;DB: INSERT new employee
+    DB--&gt;&gt;Service: Return saved employee
+    Service--&gt;&gt;API: Return employee data
+    API--&gt;&gt;Frontend: Return success response
+    Frontend--&gt;&gt;HR: Show success notification
+
+    %% Read Employees
+    HR-&gt;&gt;Frontend: View employee list
+    Frontend-&gt;&gt;API: GET /api/employes
+    API-&gt;&gt;Service: getAllEmployes()
+    Service-&gt;&gt;DB: SELECT all employees
+    DB--&gt;&gt;Service: Return employee list
+    Service--&gt;&gt;API: Return employee list
+    API--&gt;&gt;Frontend: Return employee data
+    Frontend--&gt;&gt;HR: Display employee table
+
+    %% Update Employee
+    HR-&gt;&gt;Frontend: Edit employee
+    Frontend-&gt;&gt;API: PUT /api/employes/{id}
+    API-&gt;&gt;Service: updateEmploye(id, employeDto)
+    Service-&gt;&gt;DB: UPDATE employee
+    DB--&gt;&gt;Service: Return updated employee
+    Service--&gt;&gt;API: Return employee data
+    API--&gt;&gt;Frontend: Return success response
+    Frontend--&gt;&gt;HR: Show success notification
+
+    %% Delete Employee
+    HR-&gt;&gt;Frontend: Delete employee
+    Frontend-&gt;&gt;API: DELETE /api/employes/{id}
+    API-&gt;&gt;Service: deleteEmploye(id)
+    Service-&gt;&gt;DB: DELETE employee
+    DB--&gt;&gt;Service: Confirm deletion
+    Service--&gt;&gt;API: Return success
+    API--&gt;&gt;Frontend: Return success response
+    Frontend--&gt;&gt;HR: Show success notification
+```" style="shape=mxgraph.mermaid;verticalLabelPosition=bottom;verticalAlign=top;html=1;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1500" height="1000" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

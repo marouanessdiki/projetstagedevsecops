@@ -1,7 +1,7 @@
 ﻿# Sequence Diagram - Attestation Generation
 
-```mermaid
-sequenceDiagram
+```eraser
+sequence
     participant HR as HR User
     participant Frontend as React Frontend
     participant API as Spring Boot API
@@ -11,31 +11,31 @@ sequenceDiagram
     participant JR as JasperReports
     participant FS as File System
 
-    HR->>Frontend: Select employee & attestation type
-    Frontend->>API: POST /api/attestations
-    API->>Service: generateAttestation(attestationDto)
+    HR->Frontend: Select employee & attestation type
+    Frontend->API: POST /api/attestations
+    API->Service: generateAttestation(attestationDto)
     
-    Service->>DB: Find employee by ID
+    Service->DB: Find employee by ID
     DB-->>Service: Return employee data
     
-    Service->>Template: Get template by type
-    Template->>DB: Find template by name
+    Service->Template: Get template by type
+    Template->DB: Find template by name
     DB-->>Template: Return JRXML template
     Template-->>Service: Return template content
     
-    Service->>JR: Compile JRXML template
+    Service->JR: Compile JRXML template
     JR-->>Service: Return compiled template
     
-    Service->>JR: Fill template with employee data
+    Service->JR: Fill template with employee data
     JR-->>Service: Generate PDF bytes
     
-    Service->>FS: Save PDF to pdfs/ folder
-    Service->>DB: Save attestation record
+    Service->FS: Save PDF to pdfs/ folder
+    Service->DB: Save attestation record
     DB-->>Service: Confirm save
     
     Service-->>API: Return success response
     API-->>Frontend: Return success + file info
     Frontend-->>HR: Show success notification
     
-    Note over HR,FS: PDF is now available for download
+    note over HR,FS: PDF is now available for download
 ```

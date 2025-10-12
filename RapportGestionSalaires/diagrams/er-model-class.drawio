@@ -1,0 +1,67 @@
+﻿<mxfile host="app.diagrams.net">
+  <diagram id="ebe4587d223945ccabd6c51bb46c46f2" name="Page-1">
+    <mxGraphModel dx="1232" dy="686" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="2" value="classDiagram
+    class Employe {
+      +Long id
+      +String nom
+      +String prenom
+      +String cin
+      +String poste
+      +String service
+      +LocalDate dateEmbauche
+      +String cnssNumero
+      +Double salaire
+      +String compteBancaireNumero
+      +String sexe
+    }
+
+    class Attestation {
+      +Long id
+      +Long employeId
+      +String typeAttestation
+      +LocalDateTime dateGeneration
+      +String cheminFichier
+    }
+
+    class AttestationTemplate {
+      +Long id
+      +String name
+      +String jrxml
+      +LocalDateTime updatedAt
+    }
+
+    class Parametre {
+      +Long id
+      +String type
+      +String value
+      +String label
+    }
+
+    class Hr {
+      +Long id
+      +String username
+      +String password
+      +boolean isApproved
+      +String fullName
+      +String email
+      +String phone
+      +String position
+      +String department
+      +Boolean darkTheme
+    }
+
+    %% Relationships (conceptual)
+    Employe &quot;1&quot; &lt;-- &quot;many&quot; Attestation : employeId
+    AttestationTemplate ..&gt; Attestation : generates
+    Hr ..&gt; Attestation : triggers
+    Parametre ..&gt; Employe : options/labels" style="shape=mxgraph.mermaid;verticalLabelPosition=bottom;verticalAlign=top;html=1;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1500" height="1000" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,7 +1,9 @@
 ﻿# Attestation Generation Workflow
 
-```mermaid
-flowchart TD
+```eraser
+flowchart
+    direction: top-down
+    
     Start([HR User starts process]) --> Login{User logged in?}
     Login -->|No| Auth[Login/Signup]
     Auth --> Login
@@ -32,14 +34,27 @@ flowchart TD
     Download -->|No| End([Process complete])
     DownloadFile --> End
     
-    %% Styling
-    classDef startEnd fill:#e1f5fe
-    classDef process fill:#f3e5f5
-    classDef decision fill:#fff3e0
-    classDef error fill:#ffebee
+    style Start fill:#e1f5fe
+    style End fill:#e1f5fe
+    style Auth fill:#f3e5f5
+    style SelectEmp fill:#f3e5f5
+    style LoadTypes fill:#f3e5f5
+    style SelectType fill:#f3e5f5
+    style Generate fill:#f3e5f5
+    style GetTemplate fill:#f3e5f5
+    style CompileTemplate fill:#f3e5f5
+    style FillTemplate fill:#f3e5f5
+    style GeneratePDF fill:#f3e5f5
+    style SaveFile fill:#f3e5f5
+    style SaveRecord fill:#f3e5f5
+    style Success fill:#f3e5f5
+    style DownloadFile fill:#f3e5f5
     
-    class Start,End startEnd
-    class Auth,SelectEmp,LoadTypes,SelectType,Generate,GetTemplate,CompileTemplate,FillTemplate,GeneratePDF,SaveFile,SaveRecord,Success,DownloadFile process
-    class Login,Validate,TemplateExists,Download decision
-    class Error1,Error2 error
+    style Login fill:#fff3e0
+    style Validate fill:#fff3e0
+    style TemplateExists fill:#fff3e0
+    style Download fill:#fff3e0
+    
+    style Error1 fill:#ffebee
+    style Error2 fill:#ffebee
 ```

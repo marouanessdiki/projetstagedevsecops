@@ -1,0 +1,94 @@
+﻿<mxfile host="app.diagrams.net">
+  <diagram id="73029d9d881b4ae382cdead6d78b559a" name="Page-1">
+    <mxGraphModel dx="1232" dy="686" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="2" value="# Diagram Title
+
+```mermaid
+%% Add your Mermaid diagram code here
+%% Supported types: flowchart, sequenceDiagram, classDiagram, erDiagram, gantt, pie, gitgraph, etc.
+
+flowchart TD
+    Start([Start]) --&gt; Process[Process Step]
+    Process --&gt; Decision{Decision?}
+    Decision --&gt;|Yes| Success([Success])
+    Decision --&gt;|No| Error([Error])
+    Success --&gt; End([End])
+    Error --&gt; Process
+    
+    %% Styling (optional)
+    classDef startEnd fill:#e1f5fe
+    classDef process fill:#f3e5f5
+    classDef decision fill:#fff3e0
+    classDef error fill:#ffebee
+    
+    class Start,End,Success startEnd
+    class Process process
+    class Decision decision
+    class Error error
+```
+
+## Instructions
+
+1. **Replace the title** with your diagram name
+2. **Replace the Mermaid code** with your diagram syntax
+3. **Add comments** to explain complex parts
+4. **Use styling** for better visualization (optional)
+5. **Save as .eraserdiagram** file
+6. **Open in VS Code** with Eraser extension
+
+## Mermaid Syntax Examples
+
+### Flowchart
+```mermaid
+flowchart TD
+    A[Start] --&gt; B{Decision}
+    B --&gt;|Yes| C[Action 1]
+    B --&gt;|No| D[Action 2]
+```
+
+### Sequence Diagram
+```mermaid
+sequenceDiagram
+    participant A as Actor
+    participant B as System
+    A-&gt;&gt;B: Request
+    B--&gt;&gt;A: Response
+```
+
+### Class Diagram
+```mermaid
+classDiagram
+    class ClassName {
+        +attribute: type
+        +method()
+    }
+```
+
+### ER Diagram
+```mermaid
+erDiagram
+    ENTITY {
+        int id PK
+        string name
+    }
+```
+
+### Gantt Chart
+```mermaid
+gantt
+    title Project Timeline
+    dateFormat YYYY-MM-DD
+    section Phase 1
+    Task 1 :done, task1, 2024-01-01, 2024-01-07
+    Task 2 :active, task2, 2024-01-08, 2024-01-14
+```
+" style="shape=mxgraph.mermaid;verticalLabelPosition=bottom;verticalAlign=top;html=1;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1500" height="1000" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

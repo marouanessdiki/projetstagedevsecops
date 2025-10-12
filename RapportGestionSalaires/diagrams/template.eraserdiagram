@@ -1,10 +1,9 @@
-# Diagram Title
+# Diagram Template
 
-```mermaid
-%% Add your Mermaid diagram code here
-%% Supported types: flowchart, sequenceDiagram, classDiagram, erDiagram, gantt, pie, gitgraph, etc.
-
-flowchart TD
+```eraser
+flowchart
+    direction: top-down
+    
     Start([Start]) --> Process[Process Step]
     Process --> Decision{Decision?}
     Decision -->|Yes| Success([Success])
@@ -12,70 +11,79 @@ flowchart TD
     Success --> End([End])
     Error --> Process
     
-    %% Styling (optional)
-    classDef startEnd fill:#e1f5fe
-    classDef process fill:#f3e5f5
-    classDef decision fill:#fff3e0
-    classDef error fill:#ffebee
-    
-    class Start,End,Success startEnd
-    class Process process
-    class Decision decision
-    class Error error
+    style Start fill:#e1f5fe
+    style End fill:#e1f5fe
+    style Success fill:#e8f5e8
+    style Process fill:#f3e5f5
+    style Decision fill:#fff3e0
+    style Error fill:#ffebee
 ```
 
 ## Instructions
 
 1. **Replace the title** with your diagram name
-2. **Replace the Mermaid code** with your diagram syntax
+2. **Replace the Eraser code** with your diagram syntax
 3. **Add comments** to explain complex parts
 4. **Use styling** for better visualization (optional)
 5. **Save as .eraserdiagram** file
 6. **Open in VS Code** with Eraser extension
 
-## Mermaid Syntax Examples
+## Eraser Syntax Examples
 
 ### Flowchart
-```mermaid
-flowchart TD
+```eraser
+flowchart
+    direction: top-down
     A[Start] --> B{Decision}
     B -->|Yes| C[Action 1]
     B -->|No| D[Action 2]
 ```
 
 ### Sequence Diagram
-```mermaid
-sequenceDiagram
+```eraser
+sequence
     participant A as Actor
     participant B as System
-    A->>B: Request
+    A->B: Request
     B-->>A: Response
 ```
 
-### Class Diagram
-```mermaid
-classDiagram
-    class ClassName {
-        +attribute: type
-        +method()
-    }
-```
-
-### ER Diagram
-```mermaid
-erDiagram
+### Entity Relationship
+```eraser
+er
     ENTITY {
-        int id PK
-        string name
+        id: int PK
+        name: string
     }
 ```
 
-### Gantt Chart
-```mermaid
-gantt
-    title Project Timeline
-    dateFormat YYYY-MM-DD
-    section Phase 1
-    Task 1 :done, task1, 2024-01-01, 2024-01-07
-    Task 2 :active, task2, 2024-01-08, 2024-01-14
+### Architecture Diagram
+```eraser
+flowchart
+    direction: left-right
+    subgraph "Layer 1"
+        A[Component A]
+        B[Component B]
+    end
+    subgraph "Layer 2"
+        C[Component C]
+        D[Component D]
+    end
+    A --> C
+    B --> D
 ```
+
+## Styling Options
+
+```eraser
+style ComponentName fill:#color
+```
+
+Available colors:
+- `#e1f5fe` (light blue)
+- `#f3e5f5` (light purple)
+- `#e8f5e8` (light green)
+- `#fff3e0` (light orange)
+- `#ffebee` (light red)
+- `#e0f2f1` (light teal)
+- `#fafafa` (light gray)

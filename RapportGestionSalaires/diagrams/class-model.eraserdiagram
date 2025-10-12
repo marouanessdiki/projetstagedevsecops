@@ -1,121 +1,125 @@
 ﻿# Class Model Diagram
 
-```mermaid
-classDiagram
-    class Employe {
-        -Long id
-        -String nom
-        -String prenom
-        -String poste
-        -String service
-        -BigDecimal salaire
-        -String cin
-        -String cnss_numero
-        -String compte_bancaire_numero
-        -Date date_embauche
-        -String sexe
-        +getters()
-        +setters()
-    }
-
-    class Attestation {
-        -Long id
-        -String type
-        -String nomFichier
-        -Date dateCreation
-        -Long employeId
-        +getters()
-        +setters()
-    }
-
-    class AttestationTemplate {
-        -Long id
-        -String name
-        -String jrxml
-        -LocalDateTime updatedAt
-        +getters()
-        +setters()
-    }
-
-    class Hr {
-        -Long id
-        -String username
-        -String password
-        -String fullName
-        -String email
-        -String phone
-        -String department
-        -String position
-        -Boolean isApproved
-        -Boolean darkTheme
-        +getters()
-        +setters()
-    }
-
-    class EmployeRepository {
-        +findAll()
-        +findById(Long id)
-        +save(Employe employe)
-        +deleteById(Long id)
-        +findByNomContaining(String nom)
-    }
-
-    class AttestationRepository {
-        +findAll()
-        +findById(Long id)
-        +save(Attestation attestation)
-        +deleteById(Long id)
-        +findByEmployeId(Long employeId)
-    }
-
-    class AttestationTemplateRepository {
-        +findAll()
-        +findById(Long id)
-        +save(AttestationTemplate template)
-        +deleteById(Long id)
-        +findByNameIgnoreCase(String name)
-    }
-
-    class HrRepository {
-        +findAll()
-        +findById(Long id)
-        +save(Hr hr)
-        +deleteById(Long id)
-        +findByUsername(String username)
-        +findByEmail(String email)
-    }
-
-    class AttestationService {
-        +generateAttestation(AttestationDto dto)
-        +getAllAttestations()
-        +deleteAttestation(Long id)
-        +downloadAttestation(Long id)
-    }
-
-    class AttestationTemplateService {
-        +createTemplate(AttestationTypeRequest request)
-        +getAllTemplates()
-        +updateTemplate(Long id, AttestationTypeRequest request)
-        +deleteTemplate(Long id)
-    }
-
-    class EmployeService {
-        +getAllEmployes()
-        +getEmployeById(Long id)
-        +createEmploye(EmployeDto dto)
-        +updateEmploye(Long id, EmployeDto dto)
-        +deleteEmploye(Long id)
-    }
-
-    %% Relationships
-    Employe ||--o{ Attestation : "has"
-    EmployeRepository --> Employe : "manages"
-    AttestationRepository --> Attestation : "manages"
-    AttestationTemplateRepository --> AttestationTemplate : "manages"
-    HrRepository --> Hr : "manages"
+```eraser
+flowchart
+    direction: top-down
     
-    AttestationService --> AttestationRepository : "uses"
-    AttestationService --> EmployeRepository : "uses"
-    AttestationTemplateService --> AttestationTemplateRepository : "uses"
-    EmployeService --> EmployeRepository : "uses"
+    subgraph "Entity Classes"
+        direction: left-right
+        
+        subgraph "Employe Entity"
+            E1["id: Long"]
+            E2["nom: String"]
+            E3["prenom: String"]
+            E4["poste: String"]
+            E5["service: String"]
+            E6["salaire: BigDecimal"]
+            E7["cin: String"]
+            E8["cnss_numero: String"]
+            E9["compte_bancaire_numero: String"]
+            E10["date_embauche: Date"]
+            E11["sexe: String"]
+        end
+        
+        subgraph "Attestation Entity"
+            A1["id: Long"]
+            A2["type: String"]
+            A3["nomFichier: String"]
+            A4["dateCreation: Date"]
+            A5["employeId: Long"]
+        end
+        
+        subgraph "AttestationTemplate Entity"
+            AT1["id: Long"]
+            AT2["name: String"]
+            AT3["jrxml: String"]
+            AT4["updatedAt: LocalDateTime"]
+        end
+        
+        subgraph "Hr Entity"
+            H1["id: Long"]
+            H2["username: String"]
+            H3["password: String"]
+            H4["fullName: String"]
+            H5["email: String"]
+            H6["phone: String"]
+            H7["department: String"]
+            H8["position: String"]
+            H9["isApproved: Boolean"]
+            H10["darkTheme: Boolean"]
+        end
+    end
+    
+    subgraph "Repository Interfaces"
+        direction: left-right
+        R1["EmployeRepository"]
+        R2["AttestationRepository"]
+        R3["AttestationTemplateRepository"]
+        R4["HrRepository"]
+    end
+    
+    subgraph "Service Classes"
+        direction: left-right
+        S1["AttestationService"]
+        S2["AttestationTemplateService"]
+        S3["EmployeService"]
+        S4["AuthService"]
+    end
+    
+    %% Relationships
+    E1 --> A5 : "has many"
+    R1 --> E1 : "manages"
+    R2 --> A1 : "manages"
+    R3 --> AT1 : "manages"
+    R4 --> H1 : "manages"
+    
+    S1 --> R2 : "uses"
+    S1 --> R1 : "uses"
+    S2 --> R3 : "uses"
+    S3 --> R1 : "uses"
+    S4 --> R4 : "uses"
+    
+    style E1 fill:#e8f5e8
+    style E2 fill:#e8f5e8
+    style E3 fill:#e8f5e8
+    style E4 fill:#e8f5e8
+    style E5 fill:#e8f5e8
+    style E6 fill:#e8f5e8
+    style E7 fill:#e8f5e8
+    style E8 fill:#e8f5e8
+    style E9 fill:#e8f5e8
+    style E10 fill:#e8f5e8
+    style E11 fill:#e8f5e8
+    
+    style A1 fill:#f3e5f5
+    style A2 fill:#f3e5f5
+    style A3 fill:#f3e5f5
+    style A4 fill:#f3e5f5
+    style A5 fill:#f3e5f5
+    
+    style AT1 fill:#e1f5fe
+    style AT2 fill:#e1f5fe
+    style AT3 fill:#e1f5fe
+    style AT4 fill:#e1f5fe
+    
+    style H1 fill:#fff3e0
+    style H2 fill:#fff3e0
+    style H3 fill:#fff3e0
+    style H4 fill:#fff3e0
+    style H5 fill:#fff3e0
+    style H6 fill:#fff3e0
+    style H7 fill:#fff3e0
+    style H8 fill:#fff3e0
+    style H9 fill:#fff3e0
+    style H10 fill:#fff3e0
+    
+    style R1 fill:#ffebee
+    style R2 fill:#ffebee
+    style R3 fill:#ffebee
+    style R4 fill:#ffebee
+    
+    style S1 fill:#e0f2f1
+    style S2 fill:#e0f2f1
+    style S3 fill:#e0f2f1
+    style S4 fill:#e0f2f1
 ```
