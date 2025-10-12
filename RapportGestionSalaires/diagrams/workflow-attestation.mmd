@@ -1,9 +1,0 @@
-%% Mermaid flowchart for attestation generation workflow
-flowchart LR
-  A[Employee Selection] --> B[Choose Attestation Type]
-  B --> C{Template Exists?}
-  C -- Yes --> D[Generate PDF (JasperReports)]
-  C -- No --> E[Return to Setup / Create Template]
-  D --> F[Save Path in DB]
-  F --> G[Download / List]
-

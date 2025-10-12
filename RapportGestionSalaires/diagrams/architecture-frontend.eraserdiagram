@@ -1,0 +1,55 @@
+﻿# Frontend Architecture
+
+```mermaid
+flowchart TB
+  subgraph ReactApp[React Application]
+    subgraph Components
+      C1[AdminPanel]
+      C2[AttestationPage]
+      C3[EmployeList]
+      C4[EmployeForm]
+      C5[AuthLogin]
+      C6[HrProfile]
+      C7[HrSignup]
+      C8[Menu]
+    end
+
+    subgraph Contexts
+      CTX1[ThemeContext]
+    end
+
+    subgraph Services
+      API[api.js - Axios]
+    end
+  end
+
+  subgraph External
+    MUI[Material-UI Components]
+    BACKEND[Spring Boot API]
+  end
+
+  %% Connections
+  C1 --> API
+  C2 --> API
+  C3 --> API
+  C4 --> API
+  C5 --> API
+  C6 --> API
+  C7 --> API
+
+  C1 --> CTX1
+  C2 --> CTX1
+  C3 --> CTX1
+  C6 --> CTX1
+
+  C1 --> MUI
+  C2 --> MUI
+  C3 --> MUI
+  C4 --> MUI
+  C5 --> MUI
+  C6 --> MUI
+  C7 --> MUI
+  C8 --> MUI
+
+  API --> BACKEND
+```

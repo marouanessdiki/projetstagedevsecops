@@ -1,0 +1,52 @@
+﻿# Entity Relationship Model
+
+```mermaid
+erDiagram
+    EMPLOYE {
+        bigint id PK
+        varchar nom
+        varchar prenom
+        varchar poste
+        varchar service
+        decimal salaire
+        varchar cin
+        varchar cnss_numero
+        varchar compte_bancaire_numero
+        date date_embauche
+        varchar sexe
+    }
+
+    ATTESTATION {
+        bigint id PK
+        varchar type
+        varchar nom_fichier
+        datetime date_creation
+        bigint employe_id FK
+    }
+
+    ATTESTATION_TEMPLATES {
+        bigint id PK
+        varchar name
+        longtext jrxml
+        datetime updated_at
+    }
+
+    HR {
+        bigint id PK
+        varchar username
+        varchar password
+        varchar full_name
+        varchar email
+        varchar phone
+        varchar department
+        varchar position
+        boolean is_approved
+        boolean dark_theme
+    }
+
+    %% Relationships
+    EMPLOYE ||--o{ ATTESTATION : "generates"
+    
+    %% Notes
+    ATTESTATION_TEMPLATES ||--o{ ATTESTATION : "template_for"
+```

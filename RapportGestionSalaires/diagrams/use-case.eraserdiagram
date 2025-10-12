@@ -1,5 +1,6 @@
-%% Mermaid Use Case-style diagram via flowchart
-%% Paste into eraser.io or any Mermaid renderer
+﻿# Use Case Diagram
+
+```mermaid
 flowchart LR
   %% Actors
   HR([HR User])
@@ -13,6 +14,8 @@ flowchart LR
     UC4[[Manage Templates (JRXML)]]
     UC5[[Login / Signup]]
     UC6[[Approve HR Accounts]]
+    UC7[[Dark Mode Toggle]]
+    UC8[[Color-coded Interface]]
   end
 
   %% Relations
@@ -20,11 +23,17 @@ flowchart LR
   HR --> UC2
   HR --> UC3
   HR --> UC5
+  HR --> UC7
+  HR --> UC8
   Admin --> UC4
   Admin --> UC6
   Admin --> UC5
+  Admin --> UC7
+  Admin --> UC8
 
   %% Notes
   note right of UC4: DB-backed JRXML templates
   note right of UC2: JasperReports PDF generation
-
+  note right of UC7: Theme persistence
+  note right of UC8: Intelligent color assignment
+```

@@ -1,4 +1,6 @@
-%% Mermaid diagram for backend layered architecture
+﻿# Backend Layered Architecture
+
+```mermaid
 flowchart TB
   subgraph Controllers
     C1[EmployeRestController]
@@ -53,4 +55,4 @@ flowchart TB
   R3 --> DB
   R4 --> DB
   R5 --> DB
-
+```

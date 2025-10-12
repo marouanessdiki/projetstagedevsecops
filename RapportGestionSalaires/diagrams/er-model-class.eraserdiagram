@@ -1,4 +1,4 @@
-%% Mermaid class diagram reflecting current entities
+```mermaid
 classDiagram
     class Employe {
       +Long id
@@ -29,6 +29,13 @@ classDiagram
       +LocalDateTime updatedAt
     }
 
+    class Parametre {
+      +Long id
+      +String type
+      +String value
+      +String label
+    }
+
     class Hr {
       +Long id
       +String username
@@ -42,16 +49,10 @@ classDiagram
       +Boolean darkTheme
     }
 
-    class Parametre {
-      +Long id
-      +String type
-      +String value
-      +String label
-    }
-
-    %% Conceptual relationships
-    Employe <.. Attestation : employeId
+    %% Relationships (conceptual)
+    Employe "1" <-- "many" Attestation : employeId
     AttestationTemplate ..> Attestation : generates
     Hr ..> Attestation : triggers
     Parametre ..> Employe : options/labels
+```
 

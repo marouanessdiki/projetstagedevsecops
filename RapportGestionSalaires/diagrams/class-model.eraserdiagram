@@ -1,0 +1,121 @@
+﻿# Class Model Diagram
+
+```mermaid
+classDiagram
+    class Employe {
+        -Long id
+        -String nom
+        -String prenom
+        -String poste
+        -String service
+        -BigDecimal salaire
+        -String cin
+        -String cnss_numero
+        -String compte_bancaire_numero
+        -Date date_embauche
+        -String sexe
+        +getters()
+        +setters()
+    }
+
+    class Attestation {
+        -Long id
+        -String type
+        -String nomFichier
+        -Date dateCreation
+        -Long employeId
+        +getters()
+        +setters()
+    }
+
+    class AttestationTemplate {
+        -Long id
+        -String name
+        -String jrxml
+        -LocalDateTime updatedAt
+        +getters()
+        +setters()
+    }
+
+    class Hr {
+        -Long id
+        -String username
+        -String password
+        -String fullName
+        -String email
+        -String phone
+        -String department
+        -String position
+        -Boolean isApproved
+        -Boolean darkTheme
+        +getters()
+        +setters()
+    }
+
+    class EmployeRepository {
+        +findAll()
+        +findById(Long id)
+        +save(Employe employe)
+        +deleteById(Long id)
+        +findByNomContaining(String nom)
+    }
+
+    class AttestationRepository {
+        +findAll()
+        +findById(Long id)
+        +save(Attestation attestation)
+        +deleteById(Long id)
+        +findByEmployeId(Long employeId)
+    }
+
+    class AttestationTemplateRepository {
+        +findAll()
+        +findById(Long id)
+        +save(AttestationTemplate template)
+        +deleteById(Long id)
+        +findByNameIgnoreCase(String name)
+    }
+
+    class HrRepository {
+        +findAll()
+        +findById(Long id)
+        +save(Hr hr)
+        +deleteById(Long id)
+        +findByUsername(String username)
+        +findByEmail(String email)
+    }
+
+    class AttestationService {
+        +generateAttestation(AttestationDto dto)
+        +getAllAttestations()
+        +deleteAttestation(Long id)
+        +downloadAttestation(Long id)
+    }
+
+    class AttestationTemplateService {
+        +createTemplate(AttestationTypeRequest request)
+        +getAllTemplates()
+        +updateTemplate(Long id, AttestationTypeRequest request)
+        +deleteTemplate(Long id)
+    }
+
+    class EmployeService {
+        +getAllEmployes()
+        +getEmployeById(Long id)
+        +createEmploye(EmployeDto dto)
+        +updateEmploye(Long id, EmployeDto dto)
+        +deleteEmploye(Long id)
+    }
+
+    %% Relationships
+    Employe ||--o{ Attestation : "has"
+    EmployeRepository --> Employe : "manages"
+    AttestationRepository --> Attestation : "manages"
+    AttestationTemplateRepository --> AttestationTemplate : "manages"
+    HrRepository --> Hr : "manages"
+    
+    AttestationService --> AttestationRepository : "uses"
+    AttestationService --> EmployeRepository : "uses"
+    AttestationTemplateService --> AttestationTemplateRepository : "uses"
+    EmployeService --> EmployeRepository : "uses"
+```
