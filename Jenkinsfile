@@ -49,16 +49,23 @@ pipeline {
             steps {
                 dir('gestion-salaries-frontend') {
                     script {
-                        // Try system Node.js first, fallback to Docker if needed
+                        // Try Docker first, fallback to Node.js binary if needed
                         try {
-                            sh 'node --version'
-                            sh 'npm --version'
-                            sh 'npm ci'
-                            sh 'npm run build'
-                        } catch (Exception e) {
-                            echo "System Node.js failed, using Docker for frontend build"
+                            echo "Building frontend using Docker..."
                             sh 'docker run --rm -v ${WORKSPACE}/gestion-salaries-frontend:/app -w /app node:18-alpine npm ci'
                             sh 'docker run --rm -v ${WORKSPACE}/gestion-salaries-frontend:/app -w /app node:18-alpine npm run build'
+                        } catch (Exception e) {
+                            echo "Docker failed, using Node.js binary..."
+                            sh '''
+                                # Download Node.js binary
+                                wget -q https://nodejs.org/dist/v18.19.0/node-v18.19.0-linux-x64.tar.xz
+                                tar -xf node-v18.19.0-linux-x64.tar.xz
+                                export PATH=$PWD/node-v18.19.0-linux-x64/bin:$PATH
+                                node --version
+                                npm --version
+                                npm ci
+                                npm run build
+                            '''
                         }
                     }
                     echo "✅ Frontend built successfully"
