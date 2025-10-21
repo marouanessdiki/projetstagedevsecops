@@ -1,102 +1,129 @@
 pipeline {
     agent any
     
-    tools {
-        maven 'Maven-3.9'
-        jdk 'JDK-17'
-    }
-    
     environment {
-        SONAR_HOST_URL = 'http://host.docker.internal:9000'
-        DOCKER_HUB_REPO = 'marouanessdiki/projetstagedevsecops'
-        DOCKER_IMAGE_TAG = "${BUILD_NUMBER}"
+        DOCKER_IMAGE = 'gestion-salaries'
+        DOCKER_TAG = "${BUILD_NUMBER}"
+        DOCKER_REGISTRY = 'your-dockerhub-username' // Change this to your Docker Hub username
+        SONARQUBE_TOKEN = credentials('sonarqube-token') // Add this credential in Jenkins
     }
     
     stages {
-        stage('1. 📥 Clone Repository') {
+        stage('Checkout') {
             steps {
-                echo '📥 Cloning repository from GitHub...'
                 checkout scm
+                echo "✅ Code checked out successfully"
             }
         }
         
-        stage('2. 🔨 Build & Compile') {
+        stage('Build Backend') {
             steps {
-                echo '🔨 Building project with Maven...'
-                bat 'mvn clean compile'
-            }
-        }
-        
-        stage('3. 🧪 Unit Tests') {
-            steps {
-                echo '🧪 Running unit tests...'
-                bat 'mvn test'
-            }
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
+                dir('gestion-salaries-backend') {
+                    sh 'mvn clean compile'
+                    echo "✅ Backend compiled successfully"
                 }
             }
         }
         
-        stage('4. 📦 Package') {
+        stage('Run Tests') {
             steps {
-                echo '📦 Packaging application...'
-                bat 'mvn package -DskipTests'
-            }
-        }
-        
-        stage('5. 🔍 SonarQube Analysis') {
-            steps {
-                echo '🔍 Running SonarQube analysis...'
-                withSonarQubeEnv('SonarQube') {
-                    bat 'mvn sonar:sonar'
+                dir('gestion-salaries-backend') {
+                    sh 'mvn test'
+                    echo "✅ Tests completed successfully"
                 }
             }
         }
         
-        stage('6. ✅ Quality Gate') {
+        stage('Package Application') {
             steps {
-                echo '✅ Checking quality gate...'
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
+                dir('gestion-salaries-backend') {
+                    sh 'mvn package -DskipTests'
+                    echo "✅ Application packaged successfully"
                 }
             }
         }
         
-        stage('7. 🐳 Build Docker Image') {
+        stage('Build Frontend') {
             steps {
-                echo '🐳 Building Docker image...'
-                script {
-                    bat "docker build -t ${DOCKER_HUB_REPO}:${DOCKER_IMAGE_TAG} ."
-                    bat "docker tag ${DOCKER_HUB_REPO}:${DOCKER_IMAGE_TAG} ${DOCKER_HUB_REPO}:latest"
+                dir('gestion-salaries-frontend') {
+                    sh 'npm ci'
+                    sh 'npm run build'
+                    echo "✅ Frontend built successfully"
                 }
             }
         }
         
-        stage('8. 📤 Push to Docker Hub') {
+        stage('SonarQube Analysis') {
             steps {
-                echo '📤 Pushing to Docker Hub...'
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                        bat "docker login -u %DOCKER_USER% -p %DOCKER_PASS%"
-                        bat "docker push ${DOCKER_HUB_REPO}:${DOCKER_IMAGE_TAG}"
-                        bat "docker push ${DOCKER_HUB_REPO}:latest"
+                dir('gestion-salaries-backend') {
+                    withSonarQubeEnv('SonarQube') {
+                        sh 'mvn sonar:sonar -Dsonar.projectKey=gestion-salaries -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONARQUBE_TOKEN}'
                     }
                 }
+                echo "✅ SonarQube analysis completed"
+            }
+        }
+        
+        stage('Build Docker Images') {
+            steps {
+                sh 'docker build -t ${DOCKER_IMAGE}-api:${DOCKER_TAG} ./gestion-salaries-backend'
+                sh 'docker build -t ${DOCKER_IMAGE}-web:${DOCKER_TAG} ./gestion-salaries-frontend'
+                echo "✅ Docker images built successfully"
+            }
+        }
+        
+        stage('Test Docker Containers') {
+            steps {
+                sh 'docker-compose up -d'
+                sleep(time: 30, unit: 'SECONDS')
+                sh 'curl -f http://localhost:8082/api/auth/login -X POST -H "Content-Type: application/json" -d \'{"username":"admin","password":"admin123"}\' || exit 1'
+                sh 'docker-compose down'
+                echo "✅ Docker containers tested successfully"
+            }
+        }
+        
+        stage('Push to Docker Hub') {
+            when {
+                branch 'main'
+            }
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
+                        sh 'docker tag ${DOCKER_IMAGE}-api:${DOCKER_TAG} ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-api:${DOCKER_TAG}'
+                        sh 'docker tag ${DOCKER_IMAGE}-web:${DOCKER_TAG} ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-web:${DOCKER_TAG}'
+                        sh 'docker tag ${DOCKER_IMAGE}-api:${DOCKER_TAG} ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-api:latest'
+                        sh 'docker tag ${DOCKER_IMAGE}-web:${DOCKER_TAG} ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-web:latest'
+                        sh 'docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-api:${DOCKER_TAG}'
+                        sh 'docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-web:${DOCKER_TAG}'
+                        sh 'docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-api:latest'
+                        sh 'docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-web:latest'
+                    }
+                }
+                echo "✅ Images pushed to Docker Hub successfully"
+            }
+        }
+        
+        stage('Deploy to Kubernetes') {
+            when {
+                branch 'main'
+            }
+            steps {
+                sh 'kubectl apply -f k8s/'
+                echo "✅ Application deployed to Kubernetes successfully"
             }
         }
     }
     
     post {
+        always {
+            sh 'docker-compose down || true'
+            cleanWs()
+        }
         success {
-            echo '✅ Pipeline completed successfully!'
+            echo "🎉 Pipeline completed successfully!"
         }
         failure {
-            echo '❌ Pipeline failed!'
-        }
-        always {
-            cleanWs()
+            echo "❌ Pipeline failed!"
         }
     }
 }

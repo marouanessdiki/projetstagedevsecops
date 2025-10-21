@@ -38,23 +38,23 @@ public class AttestationServiceImpl implements IAttestationService {
     public List<AttestationDto> findByEmploye(Long employeId) {
         return attestationDao.findByEmployeId(employeId);
     }
-    
+
     @Override
     public AttestationDto save(AttestationDto attestation) {
         attestation.setDateGeneration(LocalDateTime.now());
         return attestationDao.save(attestation);
     }
-    
+
     @Override
     public List<AttestationDto> findAll() {
         return attestationDao.findAll();
     }
-    
+
     @Override
     public AttestationDto findById(Long id) {
         return attestationDao.findById(id);
     }
-    
+
     @Override
     @Transactional
     public AttestationDto generateAndSave(AttestationDto attestation) throws Exception {
@@ -71,17 +71,17 @@ public class AttestationServiceImpl implements IAttestationService {
             String dir = "pdfs/";
             java.nio.file.Files.createDirectories(java.nio.file.Paths.get(dir));
 
-        // Generate the professional PDF
-        String filePath = generateProfessionalPdf(saved, employe, attestation.getTypeAttestation());
+            // Generate the professional PDF
+            String filePath = generateProfessionalPdf(saved, employe, attestation.getTypeAttestation());
             log.info("Generated PDF at path: {}", filePath);
 
             // Persist the file path
-        attestationDao.updateCheminFichier(saved.getId(), filePath);
+            attestationDao.updateCheminFichier(saved.getId(), filePath);
             log.info("Updated file path in database");
 
-        // Return DTO with updated path
-        saved.setCheminFichier(filePath);
-        return saved;
+            // Return DTO with updated path
+            saved.setCheminFichier(filePath);
+            return saved;
         } catch (Exception e) {
             log.error("Error in generateAndSave: {}", e.getMessage(), e);
             // Roll back attestation if PDF generation fails
@@ -94,39 +94,36 @@ public class AttestationServiceImpl implements IAttestationService {
     public void deleteById(Long id) {
         attestationDao.deleteById(id);
     }
-    
+
     @Override
     public byte[] generateAttestation(String typeName, Long employeId, Map<String, Object> params) {
         log.info("Generating attestation: type={}, employeId={}", typeName, employeId);
-        
+
         try {
             AttestationTemplate template = attestationTemplateService.findByName(typeName);
-            
+
+            // Add employee ID to parameters if not present (before JRXML compilation)
+            if (!params.containsKey("employeId")) {
+                params.put("employeId", employeId);
+            }
+
             try (ByteArrayInputStream inputStream = new ByteArrayInputStream(
                     template.getJrxml().getBytes(StandardCharsets.UTF_8))) {
-                
+
                 JasperReport report = JasperCompileManager.compileReport(inputStream);
                 log.debug("Template compiled successfully: {}", typeName);
-                
+
                 // Get database connection for SQL-based templates
                 try (java.sql.Connection connection = dataSource.getConnection()) {
-                    // Add employee ID to parameters if not present
-                    if (!params.containsKey("employeId")) {
-                        params.put("employeId", employeId);
-                    }
-                    
                     JasperPrint jasperPrint = JasperFillManager.fillReport(report, params, connection);
                     byte[] pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
-                    
+
                     log.info("Attestation generated successfully: type={}, size={} bytes", typeName, pdfBytes.length);
                     return pdfBytes;
                 }
             }
         } catch (RuntimeException e) {
-            if (e.getMessage().contains("Unknown attestation type")) {
-                log.warn("Template {} not found in database, falling back to legacy file system", typeName);
-                return generateAttestationFromLegacyFile(typeName, employeId, params);
-            }
+            log.error("Template {} not found in database: {}", typeName, e.getMessage());
             throw e;
         } catch (JRException e) {
             log.error("JRXML compile/fill failed for template {}: {}", typeName, e.getMessage(), e);
@@ -137,26 +134,27 @@ public class AttestationServiceImpl implements IAttestationService {
             throw new RuntimeException("Error generating attestation: " + e.getMessage(), e);
         }
     }
-    
+
     private byte[] generateAttestationFromLegacyFile(String typeName, Long employeId, Map<String, Object> params) {
         log.info("Using legacy file system for template: {}", typeName);
-        
+
         // Map new template names to legacy file paths
         String legacyFilePath = mapTemplateNameToLegacyFile(typeName);
-        
+
         try (var inputStream = new ClassPathResource(legacyFilePath).getInputStream()) {
             JasperReport report = JasperCompileManager.compileReport(inputStream);
             log.debug("Legacy template compiled successfully: {}", legacyFilePath);
-            
+
             try (java.sql.Connection connection = dataSource.getConnection()) {
                 if (!params.containsKey("employeId")) {
                     params.put("employeId", employeId);
                 }
-                
+
                 JasperPrint jasperPrint = JasperFillManager.fillReport(report, params, connection);
                 byte[] pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
-                
-                log.info("Legacy attestation generated successfully: type={}, size={} bytes", typeName, pdfBytes.length);
+
+                log.info("Legacy attestation generated successfully: type={}, size={} bytes", typeName,
+                        pdfBytes.length);
                 return pdfBytes;
             }
         } catch (Exception e) {
@@ -164,7 +162,7 @@ public class AttestationServiceImpl implements IAttestationService {
             throw new RuntimeException("Failed to generate attestation from legacy file: " + e.getMessage(), e);
         }
     }
-    
+
     private String mapTemplateNameToLegacyFile(String typeName) {
         return switch (typeName) {
             case "SALAIRE" -> "reports/attestation_salaire.jrxml";
@@ -176,12 +174,14 @@ public class AttestationServiceImpl implements IAttestationService {
         };
     }
 
-    private String generateProfessionalPdf(AttestationDto attestation, EmployeDto employe, String type) throws IOException, JRException {
+    private String generateProfessionalPdf(AttestationDto attestation, EmployeDto employe, String type)
+            throws IOException, JRException {
         String dir = "pdfs/";
         java.nio.file.Files.createDirectories(java.nio.file.Paths.get(dir));
-        
+
         // Create filename: name-of-employee_type-of-attestation_date.pdf
-        String employeeName = employe.getNom().replaceAll("[^a-zA-Z0-9]", "") + "-" + employe.getPrenom().replaceAll("[^a-zA-Z0-9]", "");
+        String employeeName = employe.getNom().replaceAll("[^a-zA-Z0-9]", "") + "-"
+                + employe.getPrenom().replaceAll("[^a-zA-Z0-9]", "");
         String attestationType = type.replaceAll("[^a-zA-Z0-9]", "").replaceAll("\\s+", "-");
         String dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String fileName = dir + employeeName + "_" + attestationType + "_" + dateStr + ".pdf";
@@ -192,24 +192,25 @@ public class AttestationServiceImpl implements IAttestationService {
             // Disable ALL JasperReports validations
             System.setProperty("net.sf.jasperreports.xml.validation", "false");
             System.setProperty("net.sf.jasperreports.compiler.xml.validation", "false");
-            
+
             // Use new dynamic template loading - no more hardcoded switches
             log.info("Loading Jasper template for type: {}", type);
-            
+
             // Use the type directly as template name (sent from frontend)
             String templateName = type;
-            
+
             // Use the new generateAttestation method for consistency
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("typeAttestation", type);
-            parameters.put("reference", "ATT-" + attestation.getId() + "-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+            parameters.put("reference", "ATT-" + attestation.getId() + "-"
+                    + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
             parameters.put("currentDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             parameters.put("ReportDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             parameters.put("employeId", employe.getId());
-            
+
             // Generate PDF using new method
             byte[] pdfBytes = generateAttestation(templateName, employe.getId(), parameters);
-            
+
             // Write to file
             try (java.io.FileOutputStream fos = new java.io.FileOutputStream(fileName)) {
                 fos.write(pdfBytes);
@@ -225,7 +226,7 @@ public class AttestationServiceImpl implements IAttestationService {
             throw new JRException("Failed to generate PDF: " + e.getMessage(), e);
         }
     }
-    
+
     private String mapLegacyTypeToTemplateName(String legacyType) {
         return switch (legacyType) {
             case "Attestation Salaire" -> "SALAIRE";

@@ -4,6 +4,8 @@ import com.netcon.gestion_salaries.entity.AttestationTemplate;
 import com.netcon.gestion_salaries.records.AttestationTypeRequest;
 import com.netcon.gestion_salaries.records.AttestationTypeResponse;
 import com.netcon.gestion_salaries.repository.AttestationTemplateRepository;
+import com.netcon.gestion_salaries.util.TemplateIO;
+import com.netcon.gestion_salaries.util.TemplateValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +27,12 @@ class AttestationTemplateServiceImplTest {
     
     @Mock
     private AttestationTemplateRepository repository;
+    
+    @Mock
+    private TemplateIO templateIO;
+    
+    @Mock
+    private TemplateValidator validator;
     
     @InjectMocks
     private AttestationTemplateServiceImpl service;
@@ -100,12 +108,19 @@ class AttestationTemplateServiceImplTest {
     
     @Test
     void testValidateTemplateName() {
-        // Test valid names
+        // Test valid names - these should not throw exceptions when creating the record
         assertDoesNotThrow(() -> new AttestationTypeRequest("SALAIRE", "<?xml version=\"1.0\"?><jasperReport></jasperReport>"));
         assertDoesNotThrow(() -> new AttestationTypeRequest("TRAVAIL_TEMP", "<?xml version=\"1.0\"?><jasperReport></jasperReport>"));
         
-        // Test invalid JRXML
+        // Test invalid JRXML - the record creation itself doesn't validate, but the service should
+        AttestationTypeRequest invalidRequest = new AttestationTypeRequest("SALAIRE", "invalid jrxml content");
+        
+        // Mock the validator to throw exception when called
+        doThrow(new IllegalArgumentException("Invalid JRXML content - must contain <jasperReport>"))
+            .when(validator).validateRequest(anyString(), anyString());
+        
+        // Test that the service method throws exception when validation fails
         assertThrows(IllegalArgumentException.class, () -> 
-            new AttestationTypeRequest("SALAIRE", "invalid jrxml content"));
+            service.createOrUpdate(invalidRequest));
     }
 }

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gestion-salaries-backend
+  labels:
+    app: gestion-salaries-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gestion-salaries-backend
+  template:
+    metadata:
+      labels:
+        app: gestion-salaries-backend
+    spec:
+      containers:
+      - name: backend
+        image: your-dockerhub-username/gestion-salaries-api:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "k8s"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:mysql://mysql-service:3306/gestion_salaries?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "app"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "app"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10

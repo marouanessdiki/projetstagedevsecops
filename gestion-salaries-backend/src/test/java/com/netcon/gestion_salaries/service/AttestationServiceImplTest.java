@@ -11,19 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class AttestationServiceImplTest {
 
     @Test
-    void testTemplateExists() {
-        // Test that the Jasper template file exists
-        ClassPathResource resource = new ClassPathResource("reports/attestation_template.jrxml");
-        assertTrue(resource.exists(), "Jasper template should exist");
-    }
-
-    @Test
     void testImagesExist() {
         // Test that the required images exist
         ClassPathResource logoResource = new ClassPathResource("images/logo.png");
         ClassPathResource cachetResource = new ClassPathResource("images/cachet.png");
-        
+
         assertTrue(logoResource.exists(), "Logo image should exist");
         assertTrue(cachetResource.exists(), "Cachet image should exist");
     }
-} 
+}

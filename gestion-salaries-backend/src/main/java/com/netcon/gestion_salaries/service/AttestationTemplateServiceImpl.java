@@ -36,6 +36,9 @@ public class AttestationTemplateServiceImpl implements IAttestationTemplateServi
     @Override
     @Transactional
     public AttestationTypeResponse createOrUpdate(AttestationTypeRequest request) {
+        // Validate the request
+        validator.validateRequest(request.name(), request.jrxml());
+        
         String upperName = request.name().toUpperCase(Locale.ROOT);
         log.info("Creating/updating attestation template: {}", upperName);
         
