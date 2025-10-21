@@ -19,8 +19,7 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir('gestion-salaries-backend') {
-                    sh 'apt-get update && apt-get install -y maven'
-                    sh 'mvn clean compile'
+                    sh 'docker run --rm -v ${WORKSPACE}:/workspace -w /workspace/gestion-salaries-backend maven:3.9-openjdk-17 mvn clean compile'
                     echo "✅ Backend compiled successfully"
                 }
             }
@@ -29,7 +28,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 dir('gestion-salaries-backend') {
-                    sh 'mvn test'
+                    sh 'docker run --rm -v ${WORKSPACE}:/workspace -w /workspace/gestion-salaries-backend maven:3.9-openjdk-17 mvn test'
                     echo "✅ Tests completed successfully"
                 }
             }
@@ -38,7 +37,7 @@ pipeline {
         stage('Package Application') {
             steps {
                 dir('gestion-salaries-backend') {
-                    sh 'mvn package -DskipTests'
+                    sh 'docker run --rm -v ${WORKSPACE}:/workspace -w /workspace/gestion-salaries-backend maven:3.9-openjdk-17 mvn package -DskipTests'
                     echo "✅ Application packaged successfully"
                 }
             }
@@ -50,7 +49,7 @@ pipeline {
                     script {
                         try {
                             withCredentials([string(credentialsId: 'sonarqube-token1', variable: 'SONAR_TOKEN')]) {
-                                sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=PROJECT_DEVSECOPS -Dsonar.host.url=http://172.29.96.1:9000 -Dsonar.login=${SONAR_TOKEN}'
+                                sh 'docker run --rm -v ${WORKSPACE}:/workspace -w /workspace/gestion-salaries-backend maven:3.9-openjdk-17 mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=PROJECT_DEVSECOPS -Dsonar.host.url=http://172.29.96.1:9000 -Dsonar.login=${SONAR_TOKEN}'
                             }
                             echo "✅ SonarQube analysis completed"
                         } catch (Exception e) {
