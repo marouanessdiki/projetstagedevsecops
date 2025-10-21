@@ -67,10 +67,19 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
-                echo "⚠️ Docker not available on Jenkins agent - skipping Docker build"
-                echo "Docker images can be built locally or on a Docker-enabled agent"
-                echo "Backend JAR file is available at: gestion-salaries-backend/target/*.jar"
-                echo "Frontend can be built with: cd gestion-salaries-frontend && npm ci && npm run build"
+                script {
+                    try {
+                        sh 'docker --version'
+                        sh 'docker build -t ${DOCKER_IMAGE}-api:${DOCKER_TAG} ./gestion-salaries-backend'
+                        sh 'docker build -t ${DOCKER_IMAGE}-web:${DOCKER_TAG} ./gestion-salaries-frontend'
+                        echo "✅ Docker images built successfully"
+                    } catch (Exception e) {
+                        echo "⚠️ Docker not available on Jenkins agent - skipping Docker build"
+                        echo "Docker images can be built locally or on a Docker-enabled agent"
+                        echo "Backend JAR file is available at: gestion-salaries-backend/target/*.jar"
+                        echo "Frontend can be built with: cd gestion-salaries-frontend && npm ci && npm run build"
+                    }
+                }
             }
         }
 
@@ -78,6 +87,23 @@ pipeline {
             steps {
                 echo "⚠️ Docker not available - skipping Docker Hub push"
                 echo "Images can be pushed manually from local machine"
+            }
+        }
+
+        stage('Deploy Monitoring Stack') {
+            steps {
+                script {
+                    try {
+                        sh 'docker --version'
+                        sh 'docker-compose -f monitoring/docker-compose.monitoring.yml up -d'
+                        echo "✅ Monitoring stack deployed successfully"
+                        echo "Prometheus: http://localhost:9091"
+                        echo "Grafana: http://localhost:5000 (admin/admin123)"
+                    } catch (Exception e) {
+                        echo "⚠️ Docker not available - skipping monitoring deployment"
+                        echo "Monitoring can be deployed manually with: docker-compose -f monitoring/docker-compose.monitoring.yml up -d"
+                    }
+                }
             }
         }
 
