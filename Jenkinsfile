@@ -53,7 +53,7 @@ pipeline {
                 dir('gestion-salaries-backend') {
                     script {
                         try {
-                            sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=projetstagedevsecops -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONAR_TOKEN}'
+                            sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=PROJECT_DEVSECOPS -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONAR_TOKEN}'
                             echo "✅ SonarQube analysis completed"
                         } catch (Exception e) {
                             echo "⚠️ SonarQube not available - skipping analysis"
