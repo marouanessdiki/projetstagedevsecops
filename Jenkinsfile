@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.9-openjdk-17'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent any
     
     environment {
         DOCKER_IMAGE = 'gestion-salaries'
@@ -71,7 +66,6 @@ pipeline {
                 script {
                     echo "🔨 Building Docker images (backend and frontend)"
                     try {
-                        sh 'apk add --no-cache docker-cli'
                         sh 'docker --version'
                         sh 'docker build -t ${DOCKER_IMAGE}-api:${DOCKER_TAG} ./gestion-salaries-backend'
                         sh 'docker build -t ${DOCKER_IMAGE}-web:${DOCKER_TAG} ./gestion-salaries-frontend'
@@ -90,7 +84,6 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh 'apk add --no-cache docker-cli'
                         sh 'docker --version'
                         sh 'docker login -u ${DOCKER_HUB_CREDENTIALS_USR} -p ${DOCKER_HUB_CREDENTIALS_PSW}'
                         sh 'docker tag ${DOCKER_IMAGE}-api:${DOCKER_TAG} ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE}-api:${DOCKER_TAG}'
