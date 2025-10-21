@@ -45,30 +45,15 @@ pipeline {
             }
         }
         
-        stage('Build Frontend') {
+        stage('Prepare Frontend') {
             steps {
                 dir('gestion-salaries-frontend') {
-                    script {
-                        // Try Docker first, fallback to Node.js binary if needed
-                        try {
-                            echo "Building frontend using Docker..."
-                            sh 'docker run --rm -v ${WORKSPACE}/gestion-salaries-frontend:/app -w /app node:18-alpine npm ci'
-                            sh 'docker run --rm -v ${WORKSPACE}/gestion-salaries-frontend:/app -w /app node:18-alpine npm run build'
-                        } catch (Exception e) {
-                            echo "Docker failed, using Node.js binary..."
-                            sh '''
-                                # Download Node.js binary
-                                wget -q https://nodejs.org/dist/v18.19.0/node-v18.19.0-linux-x64.tar.xz
-                                tar -xf node-v18.19.0-linux-x64.tar.xz
-                                export PATH=$PWD/node-v18.19.0-linux-x64/bin:$PATH
-                                node --version
-                                npm --version
-                                npm ci
-                                npm run build
-                            '''
-                        }
-                    }
-                    echo "✅ Frontend built successfully"
+                    echo "Preparing frontend for Docker build..."
+                    echo "Frontend will be built during Docker image creation"
+                    
+                    // Ensure package.json exists for Docker build
+                    sh 'ls -la package*.json'
+                    echo "✅ Frontend prepared for Docker build"
                 }
             }
         }
