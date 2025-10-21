@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     tools {
-        maven 'Maven-3.9'  // This should match the Maven tool name you configured
+        maven 'Maven-3.9'
     }
     
     environment {
@@ -45,24 +45,13 @@ pipeline {
             }
         }
         
-        stage('Prepare Frontend') {
+        stage('Build Backend Docker Image') {
             steps {
-                dir('gestion-salaries-frontend') {
-                    echo "Preparing frontend for Docker build..."
-                    echo "Frontend will be built during Docker image creation"
-                    
-                    // Ensure package.json exists for Docker build
-                    sh 'ls -la package*.json'
-                    echo "✅ Frontend prepared for Docker build"
+                script {
+                    echo "Building backend Docker image..."
+                    sh 'docker build -t ${DOCKER_IMAGE}-api:${DOCKER_TAG} ./gestion-salaries-backend'
                 }
-            }
-        }
-        
-        stage('Build Docker Images') {
-            steps {
-                sh 'docker build -t ${DOCKER_IMAGE}-api:${DOCKER_TAG} ./gestion-salaries-backend'
-                sh 'docker build -t ${DOCKER_IMAGE}-web:${DOCKER_TAG} ./gestion-salaries-frontend'
-                echo "✅ Docker images built successfully"
+                echo "✅ Backend Docker image built successfully"
             }
         }
     }
