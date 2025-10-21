@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Test') {
+            steps {
+                echo "Hello World"
+                sh 'echo "Testing basic functionality"'
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo "✅ Minimal pipeline succeeded"
+        }
+        failure {
+            echo "❌ Minimal pipeline failed"
+        }
+    }
+}

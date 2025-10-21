@@ -9,7 +9,8 @@ pipeline {
         DOCKER_IMAGE = 'gestion-salaries'
         DOCKER_TAG = "${BUILD_NUMBER}"
         DOCKER_HUB_USERNAME = 'marouanessdiki'
-        SONAR_TOKEN = credentials('sonar-token')
+        SONAR_TOKEN = credentials('sonarqube-token1')
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
     }
     
     stages {
@@ -86,6 +87,7 @@ pipeline {
                 script {
                     try {
                         sh 'docker --version'
+                        sh 'docker login -u ${DOCKER_HUB_CREDENTIALS_USR} -p ${DOCKER_HUB_CREDENTIALS_PSW}'
                         sh 'docker tag ${DOCKER_IMAGE}-api:${DOCKER_TAG} ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE}-api:${DOCKER_TAG}'
                         sh 'docker tag ${DOCKER_IMAGE}-web:${DOCKER_TAG} ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE}-web:${DOCKER_TAG}'
                         sh 'docker push ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE}-api:${DOCKER_TAG}'
