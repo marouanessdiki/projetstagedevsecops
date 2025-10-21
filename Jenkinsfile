@@ -3,7 +3,6 @@ pipeline {
     
     tools {
         maven 'Maven-3.9'  // This should match the Maven tool name you configured
-        nodejs 'NodeJS-18' // Add Node.js tool
     }
     
     environment {
@@ -49,8 +48,19 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('gestion-salaries-frontend') {
-                    sh 'npm ci'
-                    sh 'npm run build'
+                    script {
+                        // Try system Node.js first, fallback to Docker if needed
+                        try {
+                            sh 'node --version'
+                            sh 'npm --version'
+                            sh 'npm ci'
+                            sh 'npm run build'
+                        } catch (Exception e) {
+                            echo "System Node.js failed, using Docker for frontend build"
+                            sh 'docker run --rm -v ${WORKSPACE}/gestion-salaries-frontend:/app -w /app node:18-alpine npm ci'
+                            sh 'docker run --rm -v ${WORKSPACE}/gestion-salaries-frontend:/app -w /app node:18-alpine npm run build'
+                        }
+                    }
                     echo "✅ Frontend built successfully"
                 }
             }
