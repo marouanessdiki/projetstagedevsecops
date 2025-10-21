@@ -3,6 +3,7 @@ pipeline {
     
     tools {
         maven 'Maven-3.9'  // This should match the Maven tool name you configured
+        nodejs 'NodeJS-18' // Add Node.js tool
     }
     
     environment {
@@ -48,15 +49,8 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('gestion-salaries-frontend') {
-                    script {
-                        if (isUnix()) {
-                            sh 'npm ci'
-                            sh 'npm run build'
-                        } else {
-                            bat 'npm ci'
-                            bat 'npm run build'
-                        }
-                    }
+                    sh 'npm ci'
+                    sh 'npm run build'
                     echo "✅ Frontend built successfully"
                 }
             }
