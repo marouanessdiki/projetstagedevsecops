@@ -5,11 +5,6 @@ pipeline {
         maven 'Maven-3.9'
     }
     
-    environment {
-        DOCKER_IMAGE = 'gestion-salaries'
-        DOCKER_TAG = "${BUILD_NUMBER}"
-    }
-    
     stages {
         stage('Checkout') {
             steps {
@@ -42,16 +37,6 @@ pipeline {
                     sh 'mvn package -DskipTests'
                     echo "✅ Application packaged successfully"
                 }
-            }
-        }
-        
-        stage('Build Backend Docker Image') {
-            steps {
-                script {
-                    echo "Building backend Docker image..."
-                    sh 'docker build -t ${DOCKER_IMAGE}-api:${DOCKER_TAG} ./gestion-salaries-backend'
-                }
-                echo "✅ Backend Docker image built successfully"
             }
         }
     }
