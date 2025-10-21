@@ -9,7 +9,6 @@ pipeline {
         DOCKER_IMAGE = 'gestion-salaries'
         DOCKER_TAG = "${BUILD_NUMBER}"
         DOCKER_HUB_USERNAME = 'marouanessdiki'
-        SONAR_TOKEN = credentials('sonarqube-token1')
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
     }
     
@@ -53,10 +52,13 @@ pipeline {
                 dir('gestion-salaries-backend') {
                     script {
                         try {
-                            sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=PROJECT_DEVSECOPS -Dsonar.host.url=http://172.29.96.1:9000 -Dsonar.token=${SONAR_TOKEN}'
+                            withCredentials([string(credentialsId: 'sonarqube-token1', variable: 'SONAR_TOKEN')]) {
+                                sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=PROJECT_DEVSECOPS -Dsonar.host.url=http://172.29.96.1:9000 -Dsonar.login=${SONAR_TOKEN}'
+                            }
                             echo "✅ SonarQube analysis completed"
                         } catch (Exception e) {
                             echo "⚠️ SonarQube not available - skipping analysis"
+                            echo "Error: ${e.getMessage()}"
                         }
                     }
                 }
