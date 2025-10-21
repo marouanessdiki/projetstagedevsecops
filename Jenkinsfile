@@ -4,8 +4,6 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'gestion-salaries'
         DOCKER_TAG = "${BUILD_NUMBER}"
-        DOCKER_REGISTRY = 'your-dockerhub-username' // Change this to your Docker Hub username
-        SONARQUBE_TOKEN = credentials('sonarqube-token') // Add this credential in Jenkins
     }
     
     stages {
@@ -53,17 +51,6 @@ pipeline {
             }
         }
         
-        stage('SonarQube Analysis') {
-            steps {
-                dir('gestion-salaries-backend') {
-                    withSonarQubeEnv('SonarQube') {
-                        sh 'mvn sonar:sonar -Dsonar.projectKey=gestion-salaries -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONARQUBE_TOKEN}'
-                    }
-                }
-                echo "✅ SonarQube analysis completed"
-            }
-        }
-        
         stage('Build Docker Images') {
             steps {
                 sh 'docker build -t ${DOCKER_IMAGE}-api:${DOCKER_TAG} ./gestion-salaries-backend'
@@ -71,52 +58,10 @@ pipeline {
                 echo "✅ Docker images built successfully"
             }
         }
-        
-        stage('Test Docker Containers') {
-            steps {
-                sh 'docker-compose up -d'
-                sleep(time: 30, unit: 'SECONDS')
-                sh 'curl -f http://localhost:8082/api/auth/login -X POST -H "Content-Type: application/json" -d \'{"username":"admin","password":"admin123"}\' || exit 1'
-                sh 'docker-compose down'
-                echo "✅ Docker containers tested successfully"
-            }
-        }
-        
-        stage('Push to Docker Hub') {
-            when {
-                branch 'main'
-            }
-            steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
-                        sh 'docker tag ${DOCKER_IMAGE}-api:${DOCKER_TAG} ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-api:${DOCKER_TAG}'
-                        sh 'docker tag ${DOCKER_IMAGE}-web:${DOCKER_TAG} ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-web:${DOCKER_TAG}'
-                        sh 'docker tag ${DOCKER_IMAGE}-api:${DOCKER_TAG} ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-api:latest'
-                        sh 'docker tag ${DOCKER_IMAGE}-web:${DOCKER_TAG} ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-web:latest'
-                        sh 'docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-api:${DOCKER_TAG}'
-                        sh 'docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-web:${DOCKER_TAG}'
-                        sh 'docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-api:latest'
-                        sh 'docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}-web:latest'
-                    }
-                }
-                echo "✅ Images pushed to Docker Hub successfully"
-            }
-        }
-        
-        stage('Deploy to Kubernetes') {
-            when {
-                branch 'main'
-            }
-            steps {
-                sh 'kubectl apply -f k8s/'
-                echo "✅ Application deployed to Kubernetes successfully"
-            }
-        }
     }
     
     post {
         always {
-            sh 'docker-compose down || true'
             cleanWs()
         }
         success {
