@@ -1,6 +1,10 @@
 pipeline {
     agent any
     
+    tools {
+        maven 'Maven-3.9'  // This should match the Maven tool name you configured
+    }
+    
     environment {
         DOCKER_IMAGE = 'gestion-salaries'
         DOCKER_TAG = "${BUILD_NUMBER}"
@@ -17,13 +21,7 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir('gestion-salaries-backend') {
-                    script {
-                        if (isUnix()) {
-                            sh 'mvn clean compile'
-                        } else {
-                            bat 'mvn clean compile'
-                        }
-                    }
+                    sh 'mvn clean compile'
                     echo "✅ Backend compiled successfully"
                 }
             }
@@ -32,13 +30,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 dir('gestion-salaries-backend') {
-                    script {
-                        if (isUnix()) {
-                            sh 'mvn test'
-                        } else {
-                            bat 'mvn test'
-                        }
-                    }
+                    sh 'mvn test'
                     echo "✅ Tests completed successfully"
                 }
             }
@@ -47,13 +39,7 @@ pipeline {
         stage('Package Application') {
             steps {
                 dir('gestion-salaries-backend') {
-                    script {
-                        if (isUnix()) {
-                            sh 'mvn package -DskipTests'
-                        } else {
-                            bat 'mvn package -DskipTests'
-                        }
-                    }
+                    sh 'mvn package -DskipTests'
                     echo "✅ Application packaged successfully"
                 }
             }
