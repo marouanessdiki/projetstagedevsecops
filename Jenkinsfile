@@ -39,6 +39,17 @@ pipeline {
                 }
             }
         }
+
+        stage('Build Docker Images') {
+            steps {
+                script {
+                    echo "🔨 Building Docker images (backend and frontend)"
+                    sh 'docker build -t ${DOCKER_IMAGE}-api:${DOCKER_TAG} ./gestion-salaries-backend'
+                    sh 'docker build -t ${DOCKER_IMAGE}-web:${DOCKER_TAG} ./gestion-salaries-frontend'
+                }
+                echo "✅ Docker images built successfully"
+            }
+        }
     }
     
     post {
