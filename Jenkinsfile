@@ -19,6 +19,7 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir('gestion-salaries-backend') {
+                    sh 'apt-get update && apt-get install -y maven'
                     sh 'mvn clean compile'
                     echo "✅ Backend compiled successfully"
                 }
