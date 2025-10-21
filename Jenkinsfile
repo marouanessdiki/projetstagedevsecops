@@ -19,9 +19,9 @@ pipeline {
                 dir('gestion-salaries-backend') {
                     script {
                         if (isUnix()) {
-                            sh './mvnw clean compile'
+                            sh 'mvn clean compile'
                         } else {
-                            bat 'mvnw.cmd clean compile'
+                            bat 'mvn clean compile'
                         }
                     }
                     echo "✅ Backend compiled successfully"
@@ -34,9 +34,9 @@ pipeline {
                 dir('gestion-salaries-backend') {
                     script {
                         if (isUnix()) {
-                            sh './mvnw test'
+                            sh 'mvn test'
                         } else {
-                            bat 'mvnw.cmd test'
+                            bat 'mvn test'
                         }
                     }
                     echo "✅ Tests completed successfully"
@@ -49,9 +49,9 @@ pipeline {
                 dir('gestion-salaries-backend') {
                     script {
                         if (isUnix()) {
-                            sh './mvnw package -DskipTests'
+                            sh 'mvn package -DskipTests'
                         } else {
-                            bat 'mvnw.cmd package -DskipTests'
+                            bat 'mvn package -DskipTests'
                         }
                     }
                     echo "✅ Application packaged successfully"
