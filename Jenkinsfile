@@ -17,7 +17,13 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir('gestion-salaries-backend') {
-                    sh 'mvn clean compile'
+                    script {
+                        if (isUnix()) {
+                            sh './mvnw clean compile'
+                        } else {
+                            bat 'mvnw.cmd clean compile'
+                        }
+                    }
                     echo "✅ Backend compiled successfully"
                 }
             }
@@ -26,7 +32,13 @@ pipeline {
         stage('Run Tests') {
             steps {
                 dir('gestion-salaries-backend') {
-                    sh 'mvn test'
+                    script {
+                        if (isUnix()) {
+                            sh './mvnw test'
+                        } else {
+                            bat 'mvnw.cmd test'
+                        }
+                    }
                     echo "✅ Tests completed successfully"
                 }
             }
@@ -35,7 +47,13 @@ pipeline {
         stage('Package Application') {
             steps {
                 dir('gestion-salaries-backend') {
-                    sh 'mvn package -DskipTests'
+                    script {
+                        if (isUnix()) {
+                            sh './mvnw package -DskipTests'
+                        } else {
+                            bat 'mvnw.cmd package -DskipTests'
+                        }
+                    }
                     echo "✅ Application packaged successfully"
                 }
             }
@@ -44,8 +62,15 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('gestion-salaries-frontend') {
-                    sh 'npm ci'
-                    sh 'npm run build'
+                    script {
+                        if (isUnix()) {
+                            sh 'npm ci'
+                            sh 'npm run build'
+                        } else {
+                            bat 'npm ci'
+                            bat 'npm run build'
+                        }
+                    }
                     echo "✅ Frontend built successfully"
                 }
             }
