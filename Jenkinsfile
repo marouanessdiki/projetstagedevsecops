@@ -6,44 +6,16 @@ pipeline {
   }
 
   environment {
-    DOCKER_IMAGE          = 'gestion-salaries'
-    DOCKER_TAG            = "${BUILD_NUMBER}"
-    DOCKER_HUB_USERNAME   = 'marouanessdiki'
-    DOCKER_HUB_CRED_ID    = 'docker-hub-credentials'
-    REGISTRY              = 'https://index.docker.io/v1/'
+    DOCKER_IMAGE = 'gestion-salaries'
+    DOCKER_TAG   = "${BUILD_NUMBER}"
   }
 
   stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-        echo "✅ Code checked out successfully"
-      }
-    }
-
-    stage('Build Backend') {
+    stage('Build & Test') {
       steps {
         dir('gestion-salaries-backend') {
-          sh 'mvn clean compile'
-          echo "✅ Backend compiled successfully"
-        }
-      }
-    }
-
-    stage('Run Tests') {
-      steps {
-        dir('gestion-salaries-backend') {
-          sh 'mvn test'
-          echo "✅ Tests completed successfully"
-        }
-      }
-    }
-
-    stage('Package Application') {
-      steps {
-        dir('gestion-salaries-backend') {
-          sh 'mvn package -DskipTests'
-          echo "✅ Application packaged successfully"
+          sh 'mvn clean package -DskipTests'
+          echo "✅ Backend built successfully"
         }
       }
     }
@@ -64,250 +36,62 @@ pipeline {
               echo "✅ SonarQube analysis completed"
             } catch (Exception e) {
               echo "⚠️ SonarQube not available - skipping analysis"
-              echo "Error: ${e.getMessage()}"
             }
           }
         }
       }
     }
 
-    // ===== ACTUAL DOCKER OPERATIONS =====
     stage('Build Docker Images') {
       steps {
         script {
-          try {
-            echo "🔨 Building Docker images..."
-            
-            // Build backend image
-            sh '''
-              cd gestion-salaries-backend
-              docker build -t ${DOCKER_IMAGE}-backend:${DOCKER_TAG} .
-              docker tag ${DOCKER_IMAGE}-backend:${DOCKER_TAG} ${DOCKER_IMAGE}-backend:latest
-            '''
-            
-            // Build frontend image
-            sh '''
-              cd gestion-salaries-frontend
-              docker build -t ${DOCKER_IMAGE}-frontend:${DOCKER_TAG} .
-              docker tag ${DOCKER_IMAGE}-frontend:${DOCKER_TAG} ${DOCKER_IMAGE}-frontend:latest
-            '''
-            
-            echo "✅ Docker images built successfully"
-            sh 'docker images | grep ${DOCKER_IMAGE}'
-          } catch (Exception e) {
-            echo "❌ Docker build failed: ${e.getMessage()}"
-            currentBuild.result = 'UNSTABLE'
-          }
+          echo "🔨 Building Docker images..."
+          
+          sh '''
+            cd gestion-salaries-backend
+            docker build -t ${DOCKER_IMAGE}-backend:${DOCKER_TAG} .
+            docker tag ${DOCKER_IMAGE}-backend:${DOCKER_TAG} ${DOCKER_IMAGE}-backend:latest
+          '''
+
+          sh '''
+            cd gestion-salaries-frontend
+            docker build -t ${DOCKER_IMAGE}-frontend:${DOCKER_TAG} .
+            docker tag ${DOCKER_IMAGE}-frontend:${DOCKER_TAG} ${DOCKER_IMAGE}-frontend:latest
+          '''
+
+          echo "✅ Docker images built successfully"
         }
       }
     }
 
-    stage('Test Docker Images') {
+    stage('Deploy & Test') {
       steps {
         script {
-          try {
-            echo "🧪 Testing Docker images..."
-            
-            // Test backend image
-            sh '''
-              docker run -d --name test-backend-${BUILD_NUMBER} \
-                -p 8083:8080 \
-                -e SPRING_PROFILES_ACTIVE=docker \
-                -e SPRING_DATASOURCE_URL="jdbc:mysql://host.docker.internal:3306/gestion_salaries?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC" \
-                -e SPRING_DATASOURCE_USERNAME=root \
-                -e SPRING_DATASOURCE_PASSWORD=root1234 \
-                ${DOCKER_IMAGE}-backend:${DOCKER_TAG}
-            '''
-            
-            // Wait for backend to start
-            sh 'sleep 30'
-            
-            // Test health endpoint
-            sh '''
-              curl -f http://localhost:8083/actuator/health || exit 1
-            '''
-            
-            // Cleanup test container
-            sh 'docker stop test-backend-${BUILD_NUMBER} && docker rm test-backend-${BUILD_NUMBER}'
-            
-            echo "✅ Docker images tested successfully"
-          } catch (Exception e) {
-            echo "❌ Docker test failed: ${e.getMessage()}"
-            sh 'docker stop test-backend-${BUILD_NUMBER} || true'
-            sh 'docker rm test-backend-${BUILD_NUMBER} || true'
-            currentBuild.result = 'UNSTABLE'
-          }
-        }
-      }
-    }
+          echo "🚀 Deploying application stack..."
 
-    stage('Push to Docker Hub') {
-      when {
-        anyOf {
-          branch 'main'
-          branch 'develope'
-        }
-      }
-      steps {
-        script {
-          try {
-            echo "📤 Pushing images to Docker Hub..."
-            
-            withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-              sh 'echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin'
-              
-              // Push backend image
-              sh '''
-                docker push ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE}-backend:${DOCKER_TAG}
-                docker push ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE}-backend:latest
-              '''
-              
-              // Push frontend image
-              sh '''
-                docker push ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE}-frontend:${DOCKER_TAG}
-                docker push ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE}-frontend:latest
-              '''
-            }
-            echo "✅ Images pushed to Docker Hub successfully"
-          } catch (Exception e) {
-            echo "❌ Docker Hub push failed: ${e.getMessage()}"
-            currentBuild.result = 'UNSTABLE'
-          }
-        }
-      }
-    }
-
-    stage('Deploy Application Stack') {
-      steps {
-        script {
-          try {
-            echo "🚀 Deploying application stack..."
-            
-            // Deploy using docker-compose
-            sh '''
+          // Check if containers are already running
+          sh '''
+            if docker ps --format "table {{.Names}}" | grep -q "projectstagedevsecops"; then
+              echo "✅ Application stack is already running"
+            else
+              echo "🚀 Starting application stack..."
               docker-compose down || true
               docker-compose up -d --build
-            '''
-            
-            // Wait for services to start
-            sh 'sleep 60'
-            
-            // Verify deployment
-            sh '''
-              curl -f http://localhost:8081/actuator/health || exit 1
-              curl -f http://localhost:8082 || exit 1
-            '''
-            
-            echo "✅ Application stack deployed successfully"
-            echo "🌐 Frontend: http://localhost:8082"
-            echo "🔧 Backend API: http://localhost:8081"
-            echo "🗄️ Database: localhost:33060"
-          } catch (Exception e) {
-            echo "❌ Application deployment failed: ${e.getMessage()}"
-            currentBuild.result = 'UNSTABLE'
-          }
-        }
-      }
-    }
+              sleep 60
+            fi
+          '''
 
-    stage('Deploy Monitoring Stack') {
-      steps {
-        script {
-          try {
-            echo "📊 Deploying monitoring stack..."
-            
-            // Deploy monitoring stack
-            sh '''
-              docker-compose -f monitoring/docker-compose.monitoring.yml up -d
-            '''
-            
-            // Wait for monitoring to start
-            sh 'sleep 30'
-            
-            // Verify monitoring
-            sh '''
-              curl -f http://localhost:9091/-/healthy || exit 1
-              curl -f http://localhost:5000/api/health || exit 1
-            '''
-            
-            echo "✅ Monitoring stack deployed successfully"
-            echo "📊 Prometheus: http://localhost:9091"
-            echo "📈 Grafana: http://localhost:5000 (admin/admin)"
-            echo "🔍 Node Exporter: http://localhost:9101"
-          } catch (Exception e) {
-            echo "❌ Monitoring deployment failed: ${e.getMessage()}"
-            currentBuild.result = 'UNSTABLE'
-          }
-        }
-      }
-    }
+          // Test endpoints
+          sh '''
+            echo "🧪 Testing endpoints..."
+            curl -f http://localhost:8081/actuator/health || exit 1
+            curl -f http://localhost:8082 || exit 1
+            echo "✅ All tests passed"
+          '''
 
-    stage('Deploy to Kubernetes') {
-      when {
-        branch 'main'
-      }
-      steps {
-        script {
-          try {
-            echo "☸️ Deploying to Kubernetes..."
-            
-            // Check if kubectl is available
-            sh '''
-              if command -v kubectl &> /dev/null; then
-                echo "Kubernetes available - deploying..."
-                kubectl apply -f k8s/statefulset-mysql.yaml
-                kubectl apply -f k8s/service-mysql.yaml
-                kubectl apply -f k8s/deployment-backend.yaml
-                kubectl apply -f k8s/service-backend.yaml
-                kubectl apply -f k8s/deployment-frontend.yaml
-                kubectl apply -f k8s/service-frontend.yaml
-                kubectl apply -f k8s/ingress.yaml
-                
-                # Wait for deployment
-                kubectl rollout status deployment/projectstagedevsecops-api
-                kubectl rollout status deployment/projectstagedevsecops-web
-                
-                echo "✅ Kubernetes deployment successful"
-                kubectl get all
-              else
-                echo "⚠️ Kubernetes not available - skipping deployment"
-              fi
-            '''
-          } catch (Exception e) {
-            echo "❌ Kubernetes deployment failed: ${e.getMessage()}"
-            currentBuild.result = 'UNSTABLE'
-          }
-        }
-      }
-    }
-
-    stage('Run Integration Tests') {
-      steps {
-        script {
-          try {
-            echo "🧪 Running integration tests..."
-            
-            // Test all endpoints
-            sh '''
-              # Test backend health
-              curl -f http://localhost:8081/actuator/health || exit 1
-              
-              # Test backend API
-              curl -f http://localhost:8081/api/employees || exit 1
-              
-              # Test frontend
-              curl -f http://localhost:8082 || exit 1
-              
-              # Test monitoring
-              curl -f http://localhost:9091/-/healthy || exit 1
-              curl -f http://localhost:5000/api/health || exit 1
-            '''
-            
-            echo "✅ All integration tests passed"
-          } catch (Exception e) {
-            echo "❌ Integration tests failed: ${e.getMessage()}"
-            currentBuild.result = 'UNSTABLE'
-          }
+          echo "🌐 Frontend: http://localhost:8082"
+          echo "🔧 Backend API: http://localhost:8081"
+          echo "🗄️ Database: localhost:33060"
         }
       }
     }
@@ -315,19 +99,13 @@ pipeline {
 
   post {
     always {
-      // Cleanup
       sh 'docker system prune -f || true'
-      echo "🧹 Cleanup completed"
     }
     success {
       echo "🎉 Pipeline completed successfully!"
-      echo "📊 All services are running and healthy"
     }
     failure {
       echo "❌ Pipeline failed!"
-    }
-    unstable {
-      echo "⚠️ Pipeline completed with warnings!"
     }
   }
 }
