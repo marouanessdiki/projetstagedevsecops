@@ -1,0 +1,302 @@
+{
+    "dashboard": {
+        "id": null,
+        "title": "Pod Metrics - CPU, Memory, Availability",
+        "tags": [
+            "pods",
+            "cpu",
+            "memory",
+            "availability"
+        ],
+        "style": "dark",
+        "timezone": "browser",
+        "panels": [
+            {
+                "id": 1,
+                "title": "CPU Usage by Pod",
+                "type": "graph",
+                "targets": [
+                    {
+                        "expr": "rate(container_cpu_usage_seconds_total[5m]) * 100",
+                        "legendFormat": "{{pod}} - {{container}}",
+                        "refId": "A"
+                    }
+                ],
+                "yAxes": [
+                    {
+                        "label": "CPU Usage %",
+                        "min": 0,
+                        "max": 100
+                    }
+                ],
+                "xAxes": [
+                    {
+                        "type": "time"
+                    }
+                ],
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            {
+                "id": 2,
+                "title": "Memory Usage by Pod",
+                "type": "graph",
+                "targets": [
+                    {
+                        "expr": "(container_memory_usage_bytes / container_spec_memory_limit_bytes) * 100",
+                        "legendFormat": "{{pod}} - {{container}}",
+                        "refId": "A"
+                    }
+                ],
+                "yAxes": [
+                    {
+                        "label": "Memory Usage %",
+                        "min": 0,
+                        "max": 100
+                    }
+                ],
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 12,
+                    "y": 0
+                }
+            },
+            {
+                "id": 3,
+                "title": "Service Availability",
+                "type": "singlestat",
+                "targets": [
+                    {
+                        "expr": "up{job=\"spring-boot-app\"}",
+                        "refId": "A"
+                    }
+                ],
+                "valueName": "current",
+                "format": "short",
+                "mappingType": 1,
+                "mappingTypes": [
+                    {
+                        "name": "value to text",
+                        "value": 1
+                    }
+                ],
+                "valueMaps": [
+                    {
+                        "value": "1",
+                        "text": "UP"
+                    },
+                    {
+                        "value": "0",
+                        "text": "DOWN"
+                    }
+                ],
+                "colors": [
+                    "red",
+                    "green"
+                ],
+                "gridPos": {
+                    "h": 4,
+                    "w": 6,
+                    "x": 0,
+                    "y": 8
+                }
+            },
+            {
+                "id": 4,
+                "title": "Database Availability",
+                "type": "singlestat",
+                "targets": [
+                    {
+                        "expr": "up{job=\"mysql\"}",
+                        "refId": "A"
+                    }
+                ],
+                "valueName": "current",
+                "format": "short",
+                "mappingType": 1,
+                "valueMaps": [
+                    {
+                        "value": "1",
+                        "text": "UP"
+                    },
+                    {
+                        "value": "0",
+                        "text": "DOWN"
+                    }
+                ],
+                "colors": [
+                    "red",
+                    "green"
+                ],
+                "gridPos": {
+                    "h": 4,
+                    "w": 6,
+                    "x": 6,
+                    "y": 8
+                }
+            },
+            {
+                "id": 5,
+                "title": "Jenkins Availability",
+                "type": "singlestat",
+                "targets": [
+                    {
+                        "expr": "up{job=\"jenkins\"}",
+                        "refId": "A"
+                    }
+                ],
+                "valueName": "current",
+                "format": "short",
+                "mappingType": 1,
+                "valueMaps": [
+                    {
+                        "value": "1",
+                        "text": "UP"
+                    },
+                    {
+                        "value": "0",
+                        "text": "DOWN"
+                    }
+                ],
+                "colors": [
+                    "red",
+                    "green"
+                ],
+                "gridPos": {
+                    "h": 4,
+                    "w": 6,
+                    "x": 12,
+                    "y": 8
+                }
+            },
+            {
+                "id": 6,
+                "title": "Node Exporter Availability",
+                "type": "singlestat",
+                "targets": [
+                    {
+                        "expr": "up{job=\"node-exporter\"}",
+                        "refId": "A"
+                    }
+                ],
+                "valueName": "current",
+                "format": "short",
+                "mappingType": 1,
+                "valueMaps": [
+                    {
+                        "value": "1",
+                        "text": "UP"
+                    },
+                    {
+                        "value": "0",
+                        "text": "DOWN"
+                    }
+                ],
+                "colors": [
+                    "red",
+                    "green"
+                ],
+                "gridPos": {
+                    "h": 4,
+                    "w": 6,
+                    "x": 18,
+                    "y": 8
+                }
+            },
+            {
+                "id": 7,
+                "title": "Average Response Time",
+                "type": "graph",
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.50, rate(http_server_requests_seconds_bucket[5m]))",
+                        "legendFormat": "50th percentile",
+                        "refId": "A"
+                    },
+                    {
+                        "expr": "histogram_quantile(0.95, rate(http_server_requests_seconds_bucket[5m]))",
+                        "legendFormat": "95th percentile",
+                        "refId": "B"
+                    },
+                    {
+                        "expr": "histogram_quantile(0.99, rate(http_server_requests_seconds_bucket[5m]))",
+                        "legendFormat": "99th percentile",
+                        "refId": "C"
+                    }
+                ],
+                "yAxes": [
+                    {
+                        "label": "Response Time (seconds)",
+                        "min": 0
+                    }
+                ],
+                "gridPos": {
+                    "h": 8,
+                    "w": 24,
+                    "x": 0,
+                    "y": 12
+                }
+            },
+            {
+                "id": 8,
+                "title": "HTTP Request Rate",
+                "type": "graph",
+                "targets": [
+                    {
+                        "expr": "rate(http_server_requests_seconds_count[5m])",
+                        "legendFormat": "{{method}} {{uri}}",
+                        "refId": "A"
+                    }
+                ],
+                "yAxes": [
+                    {
+                        "label": "Requests per second"
+                    }
+                ],
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 0,
+                    "y": 20
+                }
+            },
+            {
+                "id": 9,
+                "title": "Error Rate",
+                "type": "graph",
+                "targets": [
+                    {
+                        "expr": "(rate(http_server_requests_seconds_count{status=~\"5..\"}[5m]) / rate(http_server_requests_seconds_count[5m])) * 100",
+                        "legendFormat": "Error Rate %",
+                        "refId": "A"
+                    }
+                ],
+                "yAxes": [
+                    {
+                        "label": "Error Rate %",
+                        "min": 0,
+                        "max": 100
+                    }
+                ],
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 12,
+                    "y": 20
+                }
+            }
+        ],
+        "time": {
+            "from": "now-1h",
+            "to": "now"
+        },
+        "refresh": "5s",
+        "schemaVersion": 16,
+        "version": 1
+    }
+}
