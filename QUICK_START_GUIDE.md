@@ -1,317 +1,241 @@
-# 🚀 Quick Start Guide - Complete Project Setup
+# 🚀 Quick Start Guide - TP Global DevOps
 
-## 📋 Prerequisites
+## **Complete Setup from A to Z**
 
-Before starting, ensure you have installed:
-- **Docker** and **Docker Compose**
-- **Git** (for cloning the repository)
-- **Java 21** (for local development)
-- **Node.js 18+** (for frontend development)
-- **Maven** (for backend builds)
+### **Prerequisites**
+- Docker Desktop
+- Git
+- Java 17+
+- Node.js 18+
 
-## 🎯 Complete Setup (A to Z)
+---
 
-### **Step 1: Clone and Navigate to Project**
+## **1. Clone and Setup Project**
+
 ```bash
-git clone <your-repository-url>
-cd "project stage devsecops"
+# Clone the repository
+git clone https://github.com/marouanessdiki/projetstagedevsecops.git
+cd projetstagedevsecops
+
+# Switch to develop branch
+git checkout develope
 ```
 
-### **Step 2: Start the Main Application Stack**
+---
+
+## **2. Start All Services**
+
+### **Start Application Stack**
 ```bash
-# Start all services (MySQL, Spring Boot API, React Frontend)
+# Start the main application
 docker-compose up -d --build
+
+# Wait for services to start (60 seconds)
+sleep 60
 ```
 
-**Wait for services to start** (2-3 minutes), then verify:
+### **Start Monitoring Stack**
 ```bash
-# Check if all containers are running
-docker ps
-```
-
-**Expected output**: 3 containers running (db, api, web)
-
-### **Step 3: Start the Monitoring Stack**
-```bash
-# Start Prometheus, Grafana, and Node Exporter
+# Start monitoring (Prometheus + Grafana)
 docker-compose -f monitoring/docker-compose.monitoring.yml up -d
+
+# Wait for monitoring to start (30 seconds)
+sleep 30
 ```
 
-**Verify monitoring stack**:
-```bash
-# Check monitoring containers
-docker ps | grep -E "(prometheus|grafana|node-exporter)"
-```
-
-### **Step 4: Start Jenkins (CI/CD)**
+### **Start Jenkins**
 ```bash
 # Start Jenkins with Docker support
-docker run -d --name jenkins \
-  -p 9090:8080 \
-  -p 50000:50000 \
-  -v jenkins_home:/var/jenkins_home \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  jenkins/jenkins:lts
+docker-compose -f docker-compose.jenkins.yml up -d
+
+# Wait for Jenkins to start (60 seconds)
+sleep 60
 ```
 
-**Wait for Jenkins to start** (3-5 minutes), then access: `http://localhost:9090`
-
-### **Step 5: Start SonarQube (Code Quality)**
+### **Start SonarQube**
 ```bash
 # Start SonarQube
-docker run -d --name sonarqube \
-  -p 9000:9000 \
-  -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true \
-  sonarqube:lts-community
+docker run -d --name sonarqube -p 9000:9000 sonarqube:lts-community
+
+# Wait for SonarQube to start (60 seconds)
+sleep 60
 ```
 
-**Wait for SonarQube to start** (2-3 minutes), then access: `http://localhost:9000`
+---
 
-### **Step 6: Start Kubernetes (Minikube)**
+## **3. Access All Services**
+
+| Service | URL | Credentials |
+|---------|-----|-------------|
+| **Frontend** | http://localhost:8082 | - |
+| **Backend API** | http://localhost:8081 | - |
+| **Database** | localhost:33060 | root/root1234 |
+| **Jenkins** | http://localhost:9090 | admin/admin |
+| **SonarQube** | http://localhost:9000 | admin/admin |
+| **Prometheus** | http://localhost:9091 | - |
+| **Grafana** | http://localhost:5000 | admin/admin123 |
+
+---
+
+## **4. Configure Jenkins Pipeline**
+
+### **4.1 Access Jenkins**
+1. Go to http://localhost:9090
+2. Login with `admin/admin`
+3. Install suggested plugins
+
+### **4.2 Configure Tools**
+1. **Manage Jenkins** → **Global Tool Configuration**
+2. **Maven**: Add Maven 3.9 installation
+3. **Git**: Use default Git installation
+
+### **4.3 Add Credentials**
+1. **Manage Jenkins** → **Manage Credentials**
+2. Add **GitHub credentials** (ID: `github-credentials`)
+3. Add **SonarQube token** (ID: `sonarqube-token1`)
+
+### **4.4 Create Pipeline Job**
+1. **New Item** → **Pipeline**
+2. **Pipeline script from SCM**
+3. **Repository URL**: `https://github.com/marouanessdiki/projetstagedevsecops.git`
+4. **Branch**: `develope`
+5. **Script Path**: `Jenkinsfile`
+
+---
+
+## **5. Run the Pipeline**
+
+1. Click **"Build Now"** in Jenkins
+2. Watch the pipeline execute:
+   - ✅ **Build & Test** (8 seconds)
+   - ✅ **SonarQube Analysis** (15 seconds)
+   - ✅ **Build Docker Images** (3 minutes)
+   - ✅ **Deploy & Test** (30 seconds)
+
+**Total Pipeline Time: ~4 minutes**
+
+---
+
+## **6. Verify Everything Works**
+
+### **Test Application**
+```bash
+# Test backend health
+curl http://localhost:8081/actuator/health
+
+# Test frontend
+curl http://localhost:8082
+```
+
+### **Test Monitoring**
+```bash
+# Test Prometheus
+curl http://localhost:9091/-/healthy
+
+# Test Grafana
+curl http://localhost:5000/api/health
+```
+
+### **Test SonarQube**
+```bash
+# Test SonarQube
+curl http://localhost:9000/api/system/status
+```
+
+---
+
+## **7. Access Dashboards**
+
+### **Grafana Dashboards**
+1. Go to http://localhost:5000
+2. Login: `admin/admin123`
+3. Import dashboards:
+   - Spring Boot Dashboard
+   - Pod Metrics Dashboard
+
+### **Prometheus Metrics**
+1. Go to http://localhost:9091
+2. Check targets: **Status** → **Targets**
+3. View metrics: **Graph**
+
+### **SonarQube Quality**
+1. Go to http://localhost:9000
+2. Login: `admin/admin`
+3. View project: **PROJECT_DEVSECOPS**
+
+---
+
+## **8. Kubernetes Deployment (Optional)**
+
 ```bash
 # Start Minikube
 minikube start
 
-# Enable ingress addon
-minikube addons enable ingress
+# Deploy to Kubernetes
+kubectl apply -f k8s/
 
-# Check cluster status
-kubectl get nodes
-```
-
-## 🌐 Access URLs
-
-After completing all steps, access your services at:
-
-| Service | URL | Credentials |
-|---------|-----|-------------|
-| **React Frontend** | http://localhost:8082 | - |
-| **Spring Boot API** | http://localhost:8081 | - |
-| **Jenkins** | http://localhost:9090 | admin / (check logs for password) |
-| **SonarQube** | http://localhost:9000 | admin / admin |
-| **Prometheus** | http://localhost:9091 | - |
-| **Grafana** | http://localhost:5000 | admin / admin |
-| **MySQL** | localhost:33060 | root / root1234 |
-
-## 🔧 Quick Commands
-
-### **Start Everything at Once**
-```bash
-# Main application
-docker-compose up -d --build
-
-# Monitoring
-docker-compose -f monitoring/docker-compose.monitoring.yml up -d
-
-# Jenkins
-docker run -d --name jenkins -p 9090:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock jenkins/jenkins:lts
-
-# SonarQube
-docker run -d --name sonarqube -p 9000:9000 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true sonarqube:lts-community
-
-# Kubernetes
-minikube start && minikube addons enable ingress
-```
-
-### **Stop Everything**
-```bash
-# Stop main application
-docker-compose down
-
-# Stop monitoring
-docker-compose -f monitoring/docker-compose.monitoring.yml down
-
-# Stop Jenkins
-docker stop jenkins && docker rm jenkins
-
-# Stop SonarQube
-docker stop sonarqube && docker rm sonarqube
-
-# Stop Kubernetes
-minikube stop
-```
-
-### **Check Status**
-```bash
-# Check all containers
-docker ps
-
-# Check Kubernetes pods
-kubectl get pods
-
-# Check services
-kubectl get services
-```
-
-## 🧪 Test the Application
-
-### **1. Test Frontend**
-- Open http://localhost:8082
-- You should see the React application
-
-### **2. Test API**
-```bash
-# Test health endpoint
-curl http://localhost:8081/actuator/health
-
-# Test API endpoints
-curl http://localhost:8081/api/employees
-```
-
-### **3. Test Monitoring**
-- Open http://localhost:9091 (Prometheus)
-- Open http://localhost:5000 (Grafana)
-- Login to Grafana: admin/admin
-
-### **4. Test Jenkins**
-- Open http://localhost:9090
-- Get initial password: `docker logs jenkins`
-- Create a new pipeline job
-
-### **5. Test SonarQube**
-- Open http://localhost:9000
-- Login: admin/admin
-- Create a new project
-
-## 🚀 Deploy to Kubernetes
-
-### **Deploy Application to Kubernetes**
-```bash
-# Deploy MySQL
-kubectl apply -f k8s/statefulset-mysql.yaml
-kubectl apply -f k8s/service-mysql.yaml
-
-# Deploy Backend
-kubectl apply -f k8s/deployment-backend.yaml
-kubectl apply -f k8s/service-backend.yaml
-
-# Deploy Frontend
-kubectl apply -f k8s/deployment-frontend.yaml
-kubectl apply -f k8s/service-frontend.yaml
-
-# Deploy Monitoring
-kubectl apply -f k8s/prometheus-deployment.yaml
-kubectl apply -f k8s/grafana-deployment.yaml
-kubectl apply -f k8s/node-exporter-daemonset.yaml
-
-# Deploy Ingress
-kubectl apply -f k8s/ingress.yaml
-```
-
-### **Check Kubernetes Deployment**
-```bash
-# Check all resources
+# Check deployment
 kubectl get all
-
-# Check services
-kubectl get services
-
-# Check ingress
-kubectl get ingress
 ```
 
-## 🔍 Troubleshooting
+---
 
-### **Common Issues**
+## **🎉 Success!**
 
-#### **Port Conflicts**
+Your complete DevOps pipeline is now running:
+
+- ✅ **CI/CD Pipeline** (Jenkins)
+- ✅ **Code Quality** (SonarQube)
+- ✅ **Containerization** (Docker)
+- ✅ **Orchestration** (Kubernetes)
+- ✅ **Monitoring** (Prometheus + Grafana)
+- ✅ **Full-stack Application** (Spring Boot + React)
+
+**Total setup time: ~10 minutes**
+
+---
+
+## **Troubleshooting**
+
+### **Port Conflicts**
 ```bash
-# Check what's using a port
-netstat -ano | findstr :8080
-
-# Kill process using port (Windows)
-taskkill /PID <PID> /F
+# Check what's using ports
+netstat -ano | findstr :8081
+netstat -ano | findstr :8082
+netstat -ano | findstr :9090
 ```
 
-#### **Docker Issues**
+### **Docker Issues**
 ```bash
 # Restart Docker
 docker-compose down
 docker-compose up -d --build
-
-# Clean up containers
-docker system prune -a
 ```
 
-#### **Kubernetes Issues**
+### **Jenkins Issues**
 ```bash
-# Restart Minikube
-minikube stop
-minikube start
+# Check Jenkins logs
+docker logs jenkins
 
-# Check logs
-kubectl logs <pod-name>
+# Restart Jenkins
+docker restart jenkins
 ```
-
-#### **Database Connection Issues**
-```bash
-# Check MySQL logs
-docker logs projectstagedevsecops-db-1
-
-# Restart database
-docker-compose restart db
-```
-
-## 📊 Monitoring Setup
-
-### **Import Grafana Dashboards**
-1. Open http://localhost:5000
-2. Login: admin/admin
-3. Click "+" → "Import"
-4. Import these dashboard IDs:
-   - **Spring Boot**: `12900`
-   - **Node Exporter**: `1860`
-   - **Jenkins**: `9964`
-
-### **Configure Prometheus Data Source**
-1. Go to Grafana → Configuration → Data Sources
-2. Add Prometheus data source
-3. URL: `http://prometheus:9090`
-4. Click "Save & Test"
-
-## 🎯 Development Workflow
-
-### **Local Development**
-```bash
-# Backend development
-cd gestion-salaries-backend
-./mvnw spring-boot:run
-
-# Frontend development
-cd gestion-salaries-frontend
-npm start
-```
-
-### **Build and Deploy**
-```bash
-# Build backend
-cd gestion-salaries-backend
-./mvnw clean package
-
-# Build frontend
-cd gestion-salaries-frontend
-npm run build
-
-# Deploy with Docker
-docker-compose up -d --build
-```
-
-## 📝 Notes
-
-- **First startup** may take 5-10 minutes for all services
-- **Jenkins** requires initial setup (get password from logs)
-- **SonarQube** may take 2-3 minutes to fully start
-- **Kubernetes** deployment requires Minikube to be running
-- **Monitoring** data will appear after a few minutes
-
-## 🆘 Need Help?
-
-If you encounter issues:
-1. Check container logs: `docker logs <container-name>`
-2. Verify all services are running: `docker ps`
-3. Check port availability: `netstat -ano | findstr :<port>`
-4. Restart services: `docker-compose restart`
 
 ---
 
-**🎉 Congratulations! Your complete DevOps stack is now running!**
+## **Cleanup**
+
+```bash
+# Stop all services
+docker-compose down
+docker-compose -f monitoring/docker-compose.monitoring.yml down
+docker-compose -f docker-compose.jenkins.yml down
+docker stop sonarqube
+
+# Remove all containers
+docker system prune -a
+```
+
+---
+
+**🎓 Your TP is ready for submission!**
