@@ -111,7 +111,7 @@ pipeline {
             // Test backend image
             sh '''
               docker run -d --name test-backend-${BUILD_NUMBER} \
-                -p 8081:8080 \
+                -p 8083:8080 \
                 -e SPRING_PROFILES_ACTIVE=docker \
                 -e SPRING_DATASOURCE_URL="jdbc:mysql://host.docker.internal:3306/gestion_salaries?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC" \
                 -e SPRING_DATASOURCE_USERNAME=root \
@@ -124,7 +124,7 @@ pipeline {
             
             // Test health endpoint
             sh '''
-              curl -f http://localhost:8081/actuator/health || exit 1
+              curl -f http://localhost:8083/actuator/health || exit 1
             '''
             
             // Cleanup test container
